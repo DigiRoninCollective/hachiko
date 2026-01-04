@@ -1,6 +1,8 @@
 // KV store wrapper for rate limiting
-// In production, this will use Vercel KV (Redis)
-// In development, falls back to in-memory store
+// Supports multiple Redis providers:
+// 1. Upstash (Vercel KV, Cloudflare, etc.) - REST API
+// 2. Standard Redis (ioredis) - TCP connection
+// 3. In-memory fallback for development
 
 type KVStore = {
   get: (key: string) => Promise<number | null>;
@@ -63,11 +65,11 @@ class InMemoryKV implements KVStore {
   }
 }
 
-class VercelKV implements KVStore {
+// Upstash Redis (REST API) - Works with Vercel KV, Cloudflare, Railway, etc.
+class UpstashKV implements KVStore {
   private kv: any;
 
   constructor() {
-    // Dynamically import @vercel/kv only if credentials are available
     const hasCredentials = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
     
     if (hasCredentials) {
@@ -75,11 +77,11 @@ class VercelKV implements KVStore {
         const { kv } = require('@vercel/kv');
         this.kv = kv;
       } catch (error) {
-        console.warn('Vercel KV credentials found but module not available, falling back to in-memory');
+        console.warn('Upstash credentials found but @vercel/kv module not available');
         throw error;
       }
     } else {
-      throw new Error('Vercel KV credentials not found');
+      throw new Error('Upstash credentials not found');
     }
   }
 
@@ -96,25 +98,84 @@ class VercelKV implements KVStore {
   }
 }
 
+// Standard Redis (ioredis) - Works with any Redis instance
+class RedisKV implements KVStore {
+  private redis: any;
+
+  constructor() {
+    const redisUrl = process.env.REDIS_URL;
+    
+    if (!redisUrl) {
+      throw new Error('REDIS_URL not found');
+    }
+
+    try {
+      const Redis = require('ioredis');
+      this.redis = new Redis(redisUrl, {
+        maxRetriesPerRequest: 3,
+        retryStrategy: (times: number) => {
+          if (times > 3) return null;
+          return Math.min(times * 100, 3000);
+        },
+      });
+
+      this.redis.on('error', (err: Error) => {
+        console.error('Redis connection error:', err);
+      });
+    } catch (error) {
+      console.warn('REDIS_URL found but ioredis module not available');
+      throw error;
+    }
+  }
+
+  async get(key: string): Promise<number | null> {
+    const value = await this.redis.get(key);
+    return value ? parseInt(value, 10) : null;
+  }
+
+  async incr(key: string): Promise<number> {
+    return await this.redis.incr(key);
+  }
+
+  async expire(key: string, seconds: number): Promise<void> {
+    await this.redis.expire(key, seconds);
+  }
+
+  async disconnect(): Promise<void> {
+    await this.redis.quit();
+  }
+}
+
 // Create singleton instance
 let kvInstance: KVStore | null = null;
 
 function getKVStore(): KVStore {
   if (kvInstance) return kvInstance;
 
-  // Try to use Vercel KV in production
+  // Option 1: Upstash (REST API) - Vercel KV, Cloudflare, Railway
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     try {
-      console.log('Using Vercel KV for rate limiting');
-      kvInstance = new VercelKV();
+      console.log('Using Upstash Redis (REST) for rate limiting');
+      kvInstance = new UpstashKV();
       return kvInstance;
     } catch (error) {
-      console.warn('Failed to initialize Vercel KV, falling back to in-memory store');
+      console.warn('Failed to initialize Upstash, trying other options...');
     }
   }
 
-  // Fallback to in-memory store
-  console.log('Using in-memory store for rate limiting (not recommended for production)');
+  // Option 2: Standard Redis (TCP) - Self-hosted, Railway, Render, DigitalOcean, AWS, etc.
+  if (process.env.REDIS_URL) {
+    try {
+      console.log('Using Redis (ioredis) for rate limiting');
+      kvInstance = new RedisKV();
+      return kvInstance;
+    } catch (error) {
+      console.warn('Failed to initialize Redis, falling back to in-memory store');
+    }
+  }
+
+  // Fallback: In-memory store for development
+  console.log('Using in-memory store for rate limiting (development only - not production safe)');
   kvInstance = new InMemoryKV();
   return kvInstance;
 }
