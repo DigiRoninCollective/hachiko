@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import { kv } from '@/lib/kv';
 
 export interface ChatMessage {
   id: string;
@@ -16,33 +17,27 @@ export interface User {
   updatedAt: Date;
 }
 
-// Rate limiting: In a real app, you'd use a Redis store or similar for rate limiting
-// For now, we'll implement a simple in-memory rate limiter (not suitable for production)
-const rateLimitStore = new Map<string, { count: number; timestamp: number }>();
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW = 60; // seconds
+const RATE_LIMIT_MAX_REQUESTS = 5;
 
 export const isUserRateLimited = async (userId: string): Promise<boolean> => {
-  const now = Date.now();
-  const windowMs = 60000; // 1 minute
-  const maxRequests = 5;
-
-  const record = rateLimitStore.get(userId) || { count: 0, timestamp: now };
-
-  if (now - record.timestamp > windowMs) {
-    // Reset the counter if the window has passed
-    record.count = 1;
-    record.timestamp = now;
-  } else {
-    // Increment the counter
-    record.count++;
+  const key = `ratelimit:chat:${userId}`;
+  
+  try {
+    const count = await kv.incr(key);
+    
+    // Set expiration on first request
+    if (count === 1) {
+      await kv.expire(key, RATE_LIMIT_WINDOW);
+    }
+    
+    return count > RATE_LIMIT_MAX_REQUESTS;
+  } catch (error) {
+    console.error('Rate limiting error:', error);
+    // Fail open - allow request if rate limiting fails
+    return false;
   }
-
-  rateLimitStore.set(userId, record);
-
-  if (record.count > maxRequests) {
-    return true;
-  }
-
-  return false;
 };
 
 // Store chat message in database
