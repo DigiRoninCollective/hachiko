@@ -98,22 +98,11 @@ export const getRecentMessages = async (limit: number = 50): Promise<ChatMessage
 // Create or get user
 export const getOrCreateUser = async (username: string): Promise<User> => {
   try {
-    // Check if user already exists
-    let user = await prisma.user.findUnique({
+    // Use upsert to create or update user in a single query
+    const user = await prisma.user.upsert({
       where: { username },
-    });
-
-    if (!user) {
-      // Create new user if doesn't exist
-      user = await prisma.user.create({
-        data: { username },
-      });
-    }
-
-    // Update the last active timestamp
-    user = await prisma.user.update({
-      where: { id: user.id },
-      data: { updatedAt: new Date() },
+      update: { updatedAt: new Date() },
+      create: { username },
     });
 
     return {
@@ -151,6 +140,11 @@ export const isValidUsername = (username: string): boolean => {
 
 // Moderate message content
 export const moderateMessage = (message: string): { isAllowed: boolean; cleanedMessage: string } => {
+  // Check message length (max 1000 chars to match DB constraint)
+  if (message.length > 1000) {
+    return { isAllowed: false, cleanedMessage: message };
+  }
+
   let cleanedMessage = message;
 
   // Check for spam patterns (simple implementation)

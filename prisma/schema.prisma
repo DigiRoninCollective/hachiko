@@ -10,28 +10,35 @@ datasource db {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Message {
-  id        String   @id
+  id        String   @id @default(uuid())
   userId    String
   username  String
-  message   String
+  message   String   @db.VarChar(1000)
   timestamp DateTime @default(now())
   ip        String?
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([timestamp(sort: Desc)])
+  @@index([userId])
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Todo {
-  id          String   @id
-  title       String
+  id          String   @id @default(uuid())
+  title       String   @db.VarChar(500)
   isCompleted Boolean  @default(false)
   createdAt   DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model User {
-  id        String    @id
-  username  String    @unique
+  id        String    @id @default(uuid())
+  username  String    @unique @db.VarChar(20)
   createdAt DateTime  @default(now())
-  updatedAt DateTime
+  updatedAt DateTime  @default(now()) @updatedAt
   Message   Message[]
+
+  @@index([username])
 }
