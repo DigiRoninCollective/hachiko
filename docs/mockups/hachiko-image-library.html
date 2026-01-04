@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hachiko Image Library - The Loyal Dog of Japan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #FEF3C7 0%, #DBEAFE 100%);
+            color: #1E293B;
+            line-height: 1.6;
+        }
+
+        header {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(30, 58, 138, 0.8) 0%,
+                rgba(245, 158, 11, 0.6) 50%,
+                rgba(30, 58, 138, 0.9) 100%
+            );
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .stat {
+            text-align: center;
+            background: rgba(254, 243, 199, 0.15);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Navigation Styles */
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(30, 58, 138, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #F59E0B;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #F59E0B;
+            margin: 2px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Contract Address Box */
+        .contract-box {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(30, 58, 138, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .contract-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .contract-title {
+            font-size: 1.5rem;
+            color: #1E3A8A;
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+        }
+
+        .contract-badge {
+            background: #10B981;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .contract-address-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .contract-address-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contract-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            background: #F9FAFB;
+        }
+
+        .copy-button {
+            padding: 0.8rem 1.2rem;
+            background: #1E3A8A;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: #F59E0B;
+        }
+
+        .contract-networks {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .network-badge {
+            background: #F3F4F6;
+            color: #6B7280;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .contract-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contract-link {
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, #1E3A8A, #F59E0B);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .contract-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+
+        .intro-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(30, 58, 138, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .intro-section h2 {
+            color: #1E3A8A;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .intro-section p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #1E3A8A;
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #1E3A8A, #F59E0B);
+            border-radius: 2px;
+        }
+
+        .section-description {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(30, 58, 138, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .image-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(30, 58, 138, 0.15);
+        }
+
+        .image-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1E3A8A, #F59E0B);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .image-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .image-container {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+
+        .image-info {
+            padding: 1.5rem;
+        }
+
+        .image-title {
+            font-size: 1.3rem;
+            color: #1E3A8A;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .image-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .image-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .image-category {
+            background: #F59E0B;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .footer {
+            background: #1E293B;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.2rem;
+            font-size: 0.8rem;
+        }
+
+        .heart {
+            color: #F59E0B;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+
+            .stat {
+                width: 200px;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: rgba(30, 58, 138, 0.98);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0,0,0,0.05);
+                padding: 2rem 0;
+                gap: 1rem;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .nav-toggle.active span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+
+            .nav-toggle.active span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .contract-address-wrapper {
+                flex-direction: column;
+            }
+
+            .contract-links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero-section">
+        <nav class="navigation">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <span class="logo-text">🐕 Hachiko</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#statues" class="nav-link">Statues</a></li>
+                    <li><a href="#historical" class="nav-link">Historical</a></li>
+                    <li><a href="#artistic" class="nav-link">Artistic</a></li>
+                    <li><a href="#akita" class="nav-link">Akita Breed</a></li>
+                    <li><a href="#chart" class="nav-link">Token Chart</a></li>
+                </ul>
+                <button class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+        <div class="hero-background">
+            <img src="/images/hachiko/hachiko-with-people.jpg" alt="Hachiko Memorial with People" class="hero-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">🐕 Hachiko Image Library</h1>
+            <p class="hero-subtitle">A visual journey through the life and legacy of Japan's most loyal dog</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">10+</span>
+                    <span class="stat-label">Years of Loyalty</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100+</span>
+                    <span class="stat-label">Images Found</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">1935</span>
+                    <span class="stat-label">Legacy Year</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <section id="home" class="intro-section">
+            <!-- Contract Address Box -->
+            <div class="contract-box">
+                <div class="contract-header">
+                    <h3 class="contract-title">🐕 Hachiko Token Contract</h3>
+                    <div class="contract-badge">Verified</div>
+                </div>
+                <div class="contract-address-container">
+                    <div class="contract-address-wrapper">
+                        <input type="text" id="contractAddress" value="0x1234567890abcdef1234567890abcdef12345678" readonly class="contract-input">
+                        <button onclick="copyContractAddress()" class="copy-button">
+                            <span id="copyText">📋 Copy</span>
+                        </button>
+                    </div>
+                    <div class="contract-networks">
+                        <span class="network-badge">Ethereum</span>
+                        <span class="network-badge">BSC</span>
+                        <span class="network-badge">Polygon</span>
+                    </div>
+                </div>
+                <div class="contract-links">
+                    <a href="https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678" target="_blank" class="contract-link">
+                        🔍 Etherscan
+                    </a>
+                    <a href="https://dexscreener.com/ethereum/0x1234567890abcdef1234567890abcdef12345678" target="_blank" class="contract-link">
+                        📊 DexScreener
+                    </a>
+                </div>
+            </div>
+
+            <h2>Welcome to the Hachiko Visual Archive</h2>
+            <p>
+                Explore our curated collection of Hachiko images, from vintage historical photographs
+                to modern artistic interpretations. Each image tells a piece of the remarkable story of
+                unwavering loyalty that touched hearts around the world.
+            </p>
+        </section>
+
+        <!-- Token Chart Section -->
+        <section id="chart" class="gallery-section">
+            <h2 class="section-title">📊 Hachiko Token Chart</h2>
+            <p class="section-description">
+                Real-time price chart and trading information for the Hachiko token
+            </p>
+            <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 8px 32px rgba(30, 58, 138, 0.1);">
+                <iframe
+                    src="https://dexscreener.com/ethereum/0x1234567890abcdef1234567890abcdef12345678?embed=1&theme=light&info=1"
+                    style="width: 100%; height: 500px; border: none; border-radius: 10px;"
+                    title="Hachiko Token Chart">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- Memorial Statues Section -->
+        <section id="statues" class="gallery-section">
+            <h2 class="section-title">🗿 Memorial Statues</h2>
+            <p class="section-description">
+                The famous bronze statues that honor Hachiko's memory at Shibuya Station and around the world
+            </p>
+            <div class="image-grid">
+                <div class="image-card">
+                    <div class="image-container">
+                        <img src="/images/hachiko/hachiko-with-people.jpg" alt="Hachiko Memorial with People" class="gallery-image">
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Main Shibuya Station Statue</h3>
+                        <p class="image-description">
+                            The iconic bronze statue at Shibuya Station, unveiled in 1948
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Memorial</span>
+                            <span>Shibuya, Tokyo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Historical Photos Section -->
+        <section id="historical" class="gallery-section">
+            <h2 class="section-title">📸 Historical Photos</h2>
+            <p class="section-description">
+                Rare vintage photographs from the 1920s-1930s showing Hachiko and his daily vigil
+            </p>
+            <div class="image-grid">
+                <div class="image-card">
+                    <div class="image-container">
+                        <img src="/images/hachiko/hachiko-family.webp" alt="Hachiko with the Hamano family" class="gallery-image">
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Hachiko with the Hamano Family</h3>
+                        <p class="image-description">
+                            The Hamano family formally posing with Hachiko in 1924
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Historical</span>
+                            <span>1924</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <div class="image-container">
+                        <img src="/images/hachiko/hachiko-waiting.webp" alt="Hachiko waiting at Shibuya station" class="gallery-image">
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Hachiko Waiting at Shibuya</h3>
+                        <p class="image-description">
+                            Hachiko at the station where he waited for his owner every day
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Historical</span>
+                            <span>1933</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <div class="image-container">
+                        <img src="/images/hachiko/hachiko-funeral.webp" alt="Hachiko's funeral" class="gallery-image">
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Hachiko's Funeral</h3>
+                        <p class="image-description">
+                            People mourning Hachiko after his death in 1935
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Historical</span>
+                            <span>1935</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Akita Breed Section -->
+        <section id="akita" class="gallery-section">
+            <h2 class="section-title">🐕 Akita Breed</h2>
+            <p class="section-description">
+                Images celebrating the Akita breed, Hachiko's noble heritage and characteristics
+            </p>
+            <div class="image-grid">
+                <div class="image-card">
+                    <div class="image-container">
+                        <img src="/images/hachiko/akita-1907.jpg" alt="Historical Akita dog from 1907" class="gallery-image">
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Historical Akita</h3>
+                        <p class="image-description">
+                            An Akita dog from 1907, showing the breed's heritage
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Breed</span>
+                            <span>1907</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <div class="image-container">
+                        <img src="/images/hachiko/akita-modern.jpg" alt="Modern Akita Inu dog" class="gallery-image">
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Modern Akita</h3>
+                        <p class="image-description">
+                            A modern Akita Inu, representing the breed today
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Breed</span>
+                            <span>2015</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Artistic Interpretations Section -->
+        <section id="artistic" class="gallery-section">
+            <h2 class="section-title">🎨 Artistic Works</h2>
+            <p class="section-description">
+                Creative interpretations, paintings, and digital art inspired by Hachiko's story
+            </p>
+            <div class="image-grid">
+                <div class="image-card">
+                    <div class="image-container">
+                        <div class="image-placeholder">🎨</div>
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Hachiko Illustration</h3>
+                        <p class="image-description">
+                            Artistic representation of Hachiko's loyal pose
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Artistic</span>
+                            <span>Digital Art</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <div class="image-container">
+                        <div class="image-placeholder">🎨</div>
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Hachiko Memorial Art</h3>
+                        <p class="image-description">
+                            Contemporary artistic interpretation of the Hachiko memorial
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Artistic</span>
+                            <span>Painting</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <div class="image-container">
+                        <div class="image-placeholder">🎨</div>
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">Loyalty Concept</h3>
+                        <p class="image-description">
+                            Abstract representation of loyalty and devotion
+                        </p>
+                        <div class="image-meta">
+                            <span class="image-category">Artistic</span>
+                            <span>Conceptual</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>Dedicated to the memory of Hachiko and the enduring power of loyalty <span class="heart">❤️</span></p>
+        <p>© 2026 Hachiko Heritage Library | Preserving the Legacy of Japan's Most Loyal Dog</p>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Smooth scrolling for navigation links
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+
+                    // Update active link
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    // Close mobile menu
+                    navToggle.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+        });
+
+        // Copy contract address functionality
+        function copyContractAddress() {
+            const contractInput = document.getElementById('contractAddress');
+            const copyText = document.getElementById('copyText');
+
+            contractInput.select();
+            contractInput.setSelectionRange(0, 99999);
+
+            navigator.clipboard.writeText(contractInput.value).then(() => {
+                copyText.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    copyText.textContent = '📋 Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Update active navigation on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPosition = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hachiko Token Chart - Real-Time Price & Trading Data</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #FEF3C7 0%, #DBEAFE 100%);
+            color: #1E293B;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        header {
+            position: relative;
+            height: 50vh;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(30, 58, 138, 0.8) 0%,
+                rgba(245, 158, 11, 0.6) 50%,
+                rgba(30, 58, 138, 0.9) 100%
+            );
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Navigation Styles */
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(30, 58, 138, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #F59E0B;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #F59E0B;
+            margin: 2px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .chart-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(30, 58, 138, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .chart-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 2.5rem;
+            color: #1E3A8A;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .chart-description {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            background: #F9FAFB;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            min-height: 500px;
+        }
+
+        .chart-iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .token-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .info-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1E3A8A;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            font-size: 1.5rem;
+            color: #F59E0B;
+            font-weight: bold;
+        }
+
+        .info-description {
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .contract-box {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(30, 58, 138, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .contract-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .contract-title {
+            font-size: 1.5rem;
+            color: #1E3A8A;
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+        }
+
+        .contract-badge {
+            background: #10B981;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .contract-address-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .contract-address-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contract-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            background: #F9FAFB;
+        }
+
+        .copy-button {
+            padding: 0.8rem 1.2rem;
+            background: #1E3A8A;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: #F59E0B;
+        }
+
+        .contract-networks {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .network-badge {
+            background: #F3F4F6;
+            color: #6B7280;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .contract-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contract-link {
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, #1E3A8A, #F59E0B);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .contract-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+
+        .footer {
+            background: #1E293B;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.2rem;
+            font-size: 0.8rem;
+        }
+
+        .heart {
+            color: #F59E0B;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: rgba(30, 58, 138, 0.98);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0,0,0,0.05);
+                padding: 2rem 0;
+                gap: 1rem;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .nav-toggle.active span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+
+            .nav-toggle.active span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .contract-address-wrapper {
+                flex-direction: column;
+            }
+
+            .contract-links {
+                flex-direction: column;
+            }
+
+            .token-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero-section">
+        <nav class="navigation">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <span class="logo-text">🐕 Hachiko</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="hachiko-image-library.html" class="nav-link">📸 Gallery</a></li>
+                    <li><a href="#" class="nav-link active">📊 Chart</a></li>
+                </ul>
+                <button class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+        <div class="hero-background">
+            <img src="/images/hachiko/hachiko-statue.jpg" alt="Hachiko Bronze Statue at Shibuya Station" class="hero-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">📊 Hachiko Token Chart</h1>
+            <p class="hero-subtitle">Real-time price tracking and trading data for the Hachiko loyalty token</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Contract Address Box -->
+        <div class="contract-box">
+            <div class="contract-header">
+                <h3 class="contract-title">🐕 Hachiko Token Contract</h3>
+                <div class="contract-badge">Verified</div>
+            </div>
+            <div class="contract-address-container">
+                <div class="contract-address-wrapper">
+                    <input type="text" id="contractAddress" value="0x1234567890abcdef1234567890abcdef12345678" readonly class="contract-input">
+                    <button onclick="copyContractAddress()" class="copy-button">
+                        <span id="copyText">📋 Copy</span>
+                    </button>
+                </div>
+                <div class="contract-networks">
+                    <span class="network-badge">Ethereum</span>
+                    <span class="network-badge">BSC</span>
+                    <span class="network-badge">Polygon</span>
+                </div>
+            </div>
+            <div class="contract-links">
+                <a href="https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678" target="_blank" class="contract-link">
+                    🔍 Etherscan
+                </a>
+                <a href="https://dexscreener.com/ethereum/0x1234567890abcdef1234567890abcdef12345678" target="_blank" class="contract-link">
+                    📊 DexScreener
+                </a>
+                <a href="https://app.uniswap.org/#/swap?outputCurrency=0x1234567890abcdef1234567890abcdef12345678" target="_blank" class="contract-link">
+                    🔄 Uniswap
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Chart Section -->
+        <section class="chart-section">
+            <div class="chart-header">
+                <h2 class="chart-title">📊 Live Price Chart</h2>
+                <p class="chart-description">
+                    Real-time price action, volume, and market data for Hachiko token across multiple exchanges
+                </p>
+            </div>
+            <div class="chart-container">
+                <iframe 
+                    src="https://dexscreener.com/ethereum/0x1234567890abcdef1234567890abcdef12345678?embed=1&theme=light&info=1&tradingview=true"
+                    class="chart-iframe"
+                    title="Hachiko Token Live Chart">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- Token Information -->
+        <section class="chart-section">
+            <div class="chart-header">
+                <h2 class="chart-title">📈 Token Statistics</h2>
+                <p class="chart-description">
+                    Key metrics and performance indicators for the Hachiko token
+                </p>
+            </div>
+            <div class="token-info">
+                <div class="info-card">
+                    <div class="info-title">💰 Current Price</div>
+                    <div class="info-value">$0.00</div>
+                    <div class="info-description">Real-time price in USD</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-title">📊 24h Volume</div>
+                    <div class="info-value">$0</div>
+                    <div class="info-description">Trading volume in last 24 hours</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-title">📈 24h Change</div>
+                    <div class="info-value">+0%</div>
+                    <div class="info-description">Price change in last 24 hours</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-title">💎 Market Cap</div>
+                    <div class="info-value">$0</div>
+                    <div class="info-description">Total market capitalization</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-title">👥 Holders</div>
+                    <div class="info-value">0</div>
+                    <div="info-description">Number of token holders</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-title">🔄 Total Supply</div>
+                    <div class="info-value">1,000,000,000</div>
+                    <div class="info-description">Total token supply</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-title">🔥 Liquidity</div>
+                    <div class="info-value">$0</div>
+                    <div class="info-description">Total liquidity across pools</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Dedicated to the memory of Hachiko and the enduring power of loyalty <span class="heart">❤️</span></p>
+        <p>© 2026 Hachiko Token | Preserving the Legacy of Japan's Most Loyal Dog</p>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Smooth scrolling for navigation links
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (link.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Copy contract address functionality
+        function copyContractAddress() {
+            const contractInput = document.getElementById('contractAddress');
+            const copyText = document.getElementById('copyText');
+            
+            contractInput.select();
+            contractInput.setSelectionRange(0, 99999);
+            
+            navigator.clipboard.writeText(contractInput.value).then(() => {
+                copyText.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    copyText.textContent = '📋 Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Update token stats (placeholder - would connect to real API)
+        function updateTokenStats() {
+            // This would connect to a real API in production
+            // For now, showing placeholder data
+            console.log('Token stats would be updated here');
+        }
+
+        // Update stats every 30 seconds
+        setInterval(updateTokenStats, 30000);
+    </script>
+</body>
+</html>

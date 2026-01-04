@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Script from "next/script";
 import { useState, useEffect, useRef } from "react";
-import { ExternalLink, Copy, Check, TrendingUp, Eye } from "lucide-react";
+import { ExternalLink, Copy, Check, TrendingUp, X } from "lucide-react";
 import { 
   BookOpenIcon, 
   AcademicCapIcon, 
@@ -20,13 +21,17 @@ import {
 } from "@heroicons/react/24/outline";
 import LoyaltyFortuneGenerator from "@/components/LoyaltyFortuneGenerator";
 import ChartChatView from "@/components/ChartChatView";
-import ChartChatView from "@/components/ChartChatView";
 
 export default function Home() {
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState(0);
+  const [lightboxImage, setLightboxImage] = useState<{
+    src: string;
+    alt: string;
+    label: string;
+  } | null>(null);
 
   useEffect(() => {
     // Initialize scroll position on mount
@@ -380,6 +385,10 @@ export default function Home() {
                     <ExternalLink className="w-4 h-4" />
                     Solscan
                   </a>
+                  <a href="https://t.me/HachikoFunCom" target="_blank" rel="noreferrer" className="bg-gradient-to-r from-[#1a1a1a] to-[#D4AF37] hover:from-[#1a1a1a]/90 hover:to-[#D4AF37]/90 text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2">
+                    <ExternalLink className="w-4 h-4" />
+                    Join Telegram
+                  </a>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-white/5 p-5">
                   <h3 className="text-lg font-semibold text-[#D4AF37] mb-3">How to Buy</h3>
@@ -390,6 +399,17 @@ export default function Home() {
                     <li>4. Track price and volume after Raydium migration.</li>
                   </ol>
                 </div>
+                <div className="rounded-xl border border-white/10 bg-white/5 p-5 md:col-span-2">
+                  <h3 className="text-lg font-semibold text-[#D4AF37] mb-3">Community Feed</h3>
+                  <div className="min-h-[260px]">
+                    <Script
+                      src="https://telegram.org/js/telegram-widget.js?22"
+                      strategy="lazyOnload"
+                      data-telegram-post="HachikoFunCom/2"
+                      data-width="100%"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -398,7 +418,7 @@ export default function Home() {
         {/* Story Section */}
         <section className="min-w-full h-full flex-shrink-0 flex items-center justify-center px-4 overflow-y-auto snap-start">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#F59E0B]">The Story of Hachiko</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-[#F59E0B]">Lore of Hachiko</h2>
             <div className="grid md:grid-cols-2 gap-12">
               <div>
                 <h3 className="text-2xl font-semibold mb-4 text-[#FEF3C7] flex items-center gap-2">
@@ -406,7 +426,7 @@ export default function Home() {
                   The Beginning
                 </h3>
                 <p className="text-lg mb-6 text-[#DBEAFE]">
-                  Hachiko was born on November 10, 1923, in Odate, Akita Prefecture, Japan. He was brought to Tokyo in 1924 by his owner, Professor Hidesaburō Ueno, a professor at the Imperial University of Tokyo.
+                  Hachiko was born on November 10, 1923, in Odate, Akita Prefecture, Japan. He was brought to Tokyo in 1924 by his owner, Professor Hidesaburo Ueno, a professor at the Imperial University of Tokyo.
                 </p>
                 <h3 className="text-2xl font-semibold mb-4 text-[#FEF3C7] flex items-center gap-2">
                   <AcademicCapIcon className="w-6 h-6" />
@@ -433,33 +453,54 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-[rgba(245,158,11,0.3)]">
-              <h3 className="text-2xl font-semibold mb-4 text-[#F59E0B] flex items-center gap-2">
-                <ChartBarIcon className="w-6 h-6" />
-                Key Facts
-              </h3>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <CalendarIcon className="w-5 h-5 text-[#F59E0B]" />
-                    <span className="font-semibold text-[#FEF3C7]">Timeline</span>
-                  </div>
-                  <p className="text-[#DBEAFE]">1923-1935 (12 years)</p>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-[rgba(245,158,11,0.3)]">
+              <div className="flex items-center gap-2 text-[#F59E0B] font-semibold mb-6">
+                <CalendarIcon className="w-5 h-5" />
+                Lore Timeline
+              </div>
+              <div className="relative grid gap-6 md:grid-cols-4">
+                <div className="hidden md:block absolute left-6 right-6 top-1 h-px bg-[#F59E0B]/30" />
+                <div className="text-center">
+                  <div className="mx-auto h-2 w-2 rounded-full bg-[#F59E0B]"></div>
+                  <div className="mt-3 text-[#F59E0B] font-semibold text-sm">1923</div>
+                  <div className="mt-1 text-[#DBEAFE] text-xs">Born in Odate, Akita</div>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <MapPinIcon className="w-5 h-5 text-[#F59E0B]" />
-                    <span className="font-semibold text-[#FEF3C7]">Location</span>
-                  </div>
-                  <p className="text-[#DBEAFE]">Shibuya Station, Tokyo</p>
+                <div className="text-center">
+                  <div className="mx-auto h-2 w-2 rounded-full bg-[#F59E0B]"></div>
+                  <div className="mt-3 text-[#F59E0B] font-semibold text-sm">1925</div>
+                  <div className="mt-1 text-[#DBEAFE] text-xs">Vigil begins at Shibuya</div>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <ClockIcon className="w-5 h-5 text-[#F59E0B]" />
-                    <span className="font-semibold text-[#FEF3C7]">Daily Routine</span>
-                  </div>
-                  <p className="text-[#DBEAFE]">Waited 10+ years daily</p>
+                <div className="text-center">
+                  <div className="mx-auto h-2 w-2 rounded-full bg-[#F59E0B]"></div>
+                  <div className="mt-3 text-[#F59E0B] font-semibold text-sm">1934</div>
+                  <div className="mt-1 text-[#DBEAFE] text-xs">Statue unveiled in Tokyo</div>
                 </div>
+                <div className="text-center">
+                  <div className="mx-auto h-2 w-2 rounded-full bg-[#F59E0B]"></div>
+                  <div className="mt-3 text-[#F59E0B] font-semibold text-sm">1935</div>
+                  <div className="mt-1 text-[#DBEAFE] text-xs">Legacy becomes legend</div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 grid gap-6 md:grid-cols-2">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-[rgba(245,158,11,0.3)]">
+                <h3 className="text-xl font-semibold mb-3 text-[#F59E0B] flex items-center gap-2">
+                  <MapPinIcon className="w-5 h-5" />
+                  Cultural Legacy
+                </h3>
+                <p className="text-[#DBEAFE] text-sm">
+                  The Hachiko statue anchors Shibuya and reminds the world that loyalty is lived.
+                </p>
+                <div className="mt-3 text-sm text-[#C2B280]">Shibuya Station, Tokyo</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-[rgba(245,158,11,0.3)]">
+                <h3 className="text-xl font-semibold mb-3 text-[#F59E0B] flex items-center gap-2">
+                  <ChartBarIcon className="w-5 h-5" />
+                  Why Tokenize
+                </h3>
+                <p className="text-[#DBEAFE] text-sm">
+                  Preserve the story, unite the loyal, and build cultural value on Solana.
+                </p>
               </div>
             </div>
           </div>
@@ -473,108 +514,162 @@ export default function Home() {
               A comprehensive visual archive documenting Hachiko's life, legacy, and cultural impact
             </p>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              <div className="relative group">
-                <div className="relative w-full h-64 bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
+            <div className="grid gap-6 md:grid-cols-3 md:auto-rows-[220px] lg:auto-rows-[240px]">
+              <div className="relative group md:col-span-2 md:row-span-2">
+                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
                   <Image
                     src="/images/hachiko/hachiko-memorial.jpg"
-                    alt="Hachiko Memorial Statue"
+                    alt="Hachiko Memorial Statue at Shibuya"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <div className="text-[#D4AF37] text-sm font-semibold">Shibuya Legacy</div>
+                    <div className="text-white text-lg font-semibold">Hachiko Memorial</div>
+                  </div>
                 </div>
-                <div className="mt-4">
-                  <h3 className="text-xl font-semibold text-[#D4AF37]">Hachiko Memorial</h3>
-                  <p className="text-[#C2B280]">Bronze statue at Shibuya Station</p>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxImage({
+                    src: "/images/hachiko/hachiko-memorial.jpg",
+                    alt: "Hachiko Memorial Statue at Shibuya",
+                    label: "Shibuya Legacy — Hachiko Memorial"
+                  })}
+                  className="absolute inset-0"
+                  aria-label="Open image: Hachiko Memorial"
+                />
               </div>
-              
+
               <div className="relative group">
-                <div className="relative w-full h-64 bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/images/hachiko/hachiko-funeral.webp"
-                    alt="Hachiko Original Photo 1935"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-xl font-semibold text-[#D4AF37]">Original Hachiko</h3>
-                  <p className="text-[#C2B280]">Verified photo from 1935</p>
-                </div>
-              </div>
-              
-              <div className="relative group">
-                <div className="relative w-full h-64 bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/images/hachiko/hachiko-family.webp"
-                    alt="Historical Hachiko Photo"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-xl font-semibold text-[#D4AF37]">Historical Photo</h3>
-                  <p className="text-[#C2B280]">Rare historical image</p>
-                </div>
-              </div>
-              
-              <div className="relative group">
-                <div className="relative w-full h-64 bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
+                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
                   <Image
                     src="/images/hachiko/hachiko-waiting.webp"
-                    alt="Historical Hachiko Photo 2"
+                    alt="Hachiko waiting at Shibuya Station"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <div className="text-[#D4AF37] text-xs font-semibold">Daily Vigil</div>
+                    <div className="text-white text-base font-semibold">Waiting at the Station</div>
+                  </div>
                 </div>
-                <div className="mt-4">
-                  <h3 className="text-xl font-semibold text-[#D4AF37]">Archive Photo</h3>
-                  <p className="text-[#C2B280]">Historical archive image</p>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxImage({
+                    src: "/images/hachiko/hachiko-waiting.webp",
+                    alt: "Hachiko waiting at Shibuya Station",
+                    label: "Daily Vigil — Waiting at the Station"
+                  })}
+                  className="absolute inset-0"
+                  aria-label="Open image: Waiting at the Station"
+                />
               </div>
-              
-              <div className="relative group">
-                <div className="relative w-full h-64 bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/images/hachiko/akita-modern.jpg"
-                    alt="Modern Akita Inu dog"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-xl font-semibold text-[#D4AF37]">1936 Anniversary</h3>
-                  <p className="text-[#C2B280]">One year memorial photo</p>
-                </div>
-              </div>
-              
-              <div className="relative group">
-                <div className="relative w-full h-64 bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/hachiko-curl-5.jpg"
-                    alt="Hachiko Historical"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-xl font-semibold text-[#D4AF37]">Vintage Photo</h3>
-                  <p className="text-[#C2B280]">Historical period image</p>
-                </div>
-              </div>
-            </div>
 
-            <div className="mt-12 text-center">
-              <a
-                href="/hachiko-image-library.html"
-                target="_blank"
-                className="bg-gradient-to-r from-[#D4AF37] to-[#1a1a1a] hover:from-[#D4AF37]/90 hover:to-[#1a1a1a]/90 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all inline-flex items-center gap-3"
-              >
-                <Eye className="w-5 h-5" />
-                View Full Image Library
-                <ExternalLink className="w-5 h-5" />
-              </a>
+              <div className="relative group">
+                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
+                  <Image
+                    src="/images/hachiko/hachiko-family.webp"
+                    alt="Hachiko with the Ueno family"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <div className="text-[#D4AF37] text-xs font-semibold">The Bond</div>
+                    <div className="text-white text-base font-semibold">Hachiko with Family</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxImage({
+                    src: "/images/hachiko/hachiko-family.webp",
+                    alt: "Hachiko with the Ueno family",
+                    label: "The Bond — Hachiko with Family"
+                  })}
+                  className="absolute inset-0"
+                  aria-label="Open image: Hachiko with Family"
+                />
+              </div>
+
+              <div className="relative group">
+                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
+                  <Image
+                    src="/images/hachiko/hachiko-funeral.webp"
+                    alt="Farewell to Hachiko in 1935"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <div className="text-[#D4AF37] text-xs font-semibold">1935</div>
+                    <div className="text-white text-base font-semibold">Farewell and Tribute</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxImage({
+                    src: "/images/hachiko/hachiko-funeral.webp",
+                    alt: "Farewell to Hachiko in 1935",
+                    label: "1935 — Farewell and Tribute"
+                  })}
+                  className="absolute inset-0"
+                  aria-label="Open image: Farewell and Tribute"
+                />
+              </div>
+
+              <div className="relative group">
+                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
+                  <Image
+                    src="/hachiko-bronze-statue-shibuya.jpg"
+                    alt="Bronze statue of Hachiko in Shibuya"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <div className="text-[#D4AF37] text-xs font-semibold">Shibuya Icon</div>
+                    <div className="text-white text-base font-semibold">Bronze Statue</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxImage({
+                    src: "/hachiko-bronze-statue-shibuya.jpg",
+                    alt: "Bronze statue of Hachiko in Shibuya",
+                    label: "Shibuya Icon — Bronze Statue"
+                  })}
+                  className="absolute inset-0"
+                  aria-label="Open image: Bronze Statue"
+                />
+              </div>
+
+              <div className="relative group">
+                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
+                  <Image
+                    src="/hachiko-original-1935-wikipedia.jpg"
+                    alt="Hachiko portrait, 1930s"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4">
+                    <div className="text-[#D4AF37] text-xs font-semibold">Archive</div>
+                    <div className="text-white text-base font-semibold">Original Portrait</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxImage({
+                    src: "/hachiko-original-1935-wikipedia.jpg",
+                    alt: "Hachiko portrait, 1930s",
+                    label: "Archive — Original Portrait"
+                  })}
+                  className="absolute inset-0"
+                  aria-label="Open image: Original Portrait"
+                />
+              </div>
             </div>
           </div>
         </section>

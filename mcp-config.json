@@ -1,0 +1,1 @@
+{"servers": {"canva-dev": {"type": "stdio", "command": "npx", "args": ["-y", "@canva/cli@latest", "mcp"]}}}

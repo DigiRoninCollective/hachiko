@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hachiko Token - Social Media Assets</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap');
+        
+        :root {
+            --primary-blue: #1E3A8A;
+            --gold: #F59E0B;
+            --brown: #92400E;
+            --cream: #FEF3C7;
+            --light-blue: #DBEAFE;
+            --dark-blue: #1E293B;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            color: var(--cream);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--gold), var(--cream));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--light-blue);
+            margin-bottom: 50px;
+        }
+        
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .asset-card {
+            background: rgba(254, 243, 199, 0.1);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        
+        .asset-preview {
+            width: 100%;
+            height: 400px;
+            background: var(--primary-blue);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Twitter Post */
+        .twitter-post {
+            background: #000;
+            color: white;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .twitter-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .twitter-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--gold), var(--brown));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .twitter-name {
+            font-weight: 700;
+            color: white;
+        }
+        
+        .twitter-handle {
+            color: #71767B;
+            font-size: 0.9rem;
+        }
+        
+        .twitter-content {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .twitter-stats {
+            display: flex;
+            gap: 20px;
+            color: #71767B;
+            font-size: 0.9rem;
+        }
+        
+        /* Instagram Post */
+        .instagram-post {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            padding: 3px;
+            height: 100%;
+            border-radius: 15px;
+        }
+        
+        .instagram-inner {
+            background: var(--primary-blue);
+            height: 100%;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .instagram-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .instagram-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .instagram-cta {
+            background: linear-gradient(135deg, var(--gold), #F97316);
+            color: var(--dark-blue);
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        /* Telegram Post */
+        .telegram-post {
+            background: #0088CC;
+            color: white;
+            padding: 25px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .telegram-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .telegram-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .telegram-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .telegram-button {
+            background: white;
+            color: #0088CC;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        /* Banner Ad */
+        .banner-ad {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 15px;
+        }
+        
+        .banner-content {
+            flex: 1;
+        }
+        
+        .banner-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .banner-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .banner-button {
+            background: linear-gradient(135deg, var(--gold), #F97316);
+            color: var(--dark-blue);
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .banner-visual {
+            flex: 0 0 150px;
+            text-align: center;
+        }
+        
+        .banner-logo {
+            font-size: 5rem;
+            margin-bottom: 10px;
+        }
+        
+        .banner-tagline {
+            color: var(--gold);
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .asset-description {
+            color: var(--light-blue);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .specs {
+            background: rgba(30, 58, 138, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .specs h4 {
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .specs ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .specs li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        .download-section {
+            text-align: center;
+            margin-top: 50px;
+            padding: 40px;
+            background: rgba(254, 243, 199, 0.1);
+            border-radius: 20px;
+            border: 2px solid var(--gold);
+        }
+        
+        .download-button {
+            background: linear-gradient(135deg, var(--gold), #F97316);
+            color: var(--dark-blue);
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: inline-block;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .download-button:hover {
+            transform: translateY(-3px);
+        }
+        
+        @media (max-width: 768px) {
+            .assets-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .banner-ad {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .banner-visual {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hachiko Token</h1>
+        <p class="subtitle">Social Media Assets & Marketing Materials</p>
+        
+        <div class="assets-grid">
+            <!-- Twitter Post -->
+            <div class="asset-card">
+                <h3>🐦 Twitter Post</h3>
+                <div class="asset-preview">
+                    <div class="twitter-post">
+                        <div class="twitter-header">
+                            <div class="twitter-avatar">🐕</div>
+                            <div>
+                                <div class="twitter-name">Hachiko Token</div>
+                                <div class="twitter-handle">@HachikoToken</div>
+                            </div>
+                        </div>
+                        <div class="twitter-content">
+                            🐕 Loyalty meets crypto! $HACHIKO token launches soon. 
+                            Built on trust, designed for value. Join the pack that waits for greatness! 🚀
+                            
+                            #Crypto #Loyalty #DeFi #Hachiko
+                        </div>
+                        <div class="twitter-stats">
+                            <span>💬 24</span>
+                            <span>🔄 89</span>
+                            <span>❤️ 342</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="asset-description">
+                    Optimized Twitter post with engaging emoji usage and relevant hashtags. 
+                    Blue/gold theme maintains brand consistency while standing out in feeds.
+                </p>
+                <div class="specs">
+                    <h4>Specifications:</h4>
+                    <ul>
+                        <li>Dimensions: 1200x675px</li>
+                        <li>Format: PNG/Square</li>
+                        <li>Colors: Primary blue, gold accents</li>
+                        <li>Tone: Trustworthy yet exciting</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Instagram Post -->
+            <div class="asset-card">
+                <h3>📷 Instagram Post</h3>
+                <div class="asset-preview">
+                    <div class="instagram-post">
+                        <div class="instagram-inner">
+                            <div class="instagram-icon">🐕</div>
+                            <div class="instagram-text">
+                                Loyalty That Lasts Forever
+                            </div>
+                            <div class="instagram-text" style="font-size: 1rem; font-weight: 400; color: var(--light-blue);">
+                                The world's most loyal cryptocurrency is here. 
+                                Built on trust, designed for value.
+                            </div>
+                            <a href="#" class="instagram-cta">Join the Pack</a>
+                        </div>
+                    </div>
+                </div>
+                <p class="asset-description">
+                    Visually striking Instagram post with gradient border. 
+                    Clean typography and clear call-to-action for maximum engagement.
+                </p>
+                <div class="specs">
+                    <h4>Specifications:</h4>
+                    <ul>
+                        <li>Dimensions: 1080x1080px</li>
+                        <li>Format: PNG/Square</li>
+                        <li>Border: Instagram gradient</li>
+                        <li>Focus: Visual impact + clear message</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Telegram Post -->
+            <div class="asset-card">
+                <h3>💬 Telegram Announcement</h3>
+                <div class="asset-preview">
+                    <div class="telegram-post">
+                        <div class="telegram-icon">🐕</div>
+                        <div class="telegram-title">
+                            Hachiko Token Launch!
+                        </div>
+                        <div class="telegram-text">
+                            Welcome to the most loyal community in crypto! 
+                            $HACHIKO combines unwavering trust with premium value.
+                            
+                            🚀 Presale starting soon
+                            💎 Limited supply
+                            🛡️ 100% secure
+                        </div>
+                        <a href="#" class="telegram-button">Join Community</a>
+                    </div>
+                </div>
+                <p class="asset-description">
+                    Telegram-optimized announcement with clear information hierarchy 
+                    and strong community-building messaging.
+                </p>
+                <div class="specs">
+                    <h4>Specifications:</h4>
+                    <ul>
+                        <li>Dimensions: 1200x800px</li>
+                        <li>Format: JPG</li>
+                        <li>Platform: Telegram posts</li>
+                        <li>Goal: Community growth</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Banner Ad -->
+            <div class="asset-card">
+                <h3>🎯 Banner Advertisement</h3>
+                <div class="asset-preview">
+                    <div class="banner-ad">
+                        <div class="banner-content">
+                            <div class="banner-title">
+                                Hachiko Token
+                            </div>
+                            <div class="banner-text">
+                                The cryptocurrency that waits for you. 
+                                Built on legendary loyalty and trust.
+                            </div>
+                            <a href="#" class="banner-button">Buy Now</a>
+                        </div>
+                        <div class="banner-visual">
+                            <div class="banner-logo">🐕</div>
+                            <div class="banner-tagline">Loyalty Forever</div>
+                        </div>
+                    </div>
+                </div>
+                <p class="asset-description">
+                    High-conversion banner ad for crypto websites and exchanges. 
+                    Strong visual hierarchy with clear value proposition.
+                </p>
+                <div class="specs">
+                    <h4>Specifications:</h4>
+                    <ul>
+                        <li>Dimensions: 728x90px (Leaderboard)</li>
+                        <li>Format: Animated GIF</li>
+                        <li>CTR optimized design</li>
+                        <li>Clear call-to-action</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <h2 style="color: var(--gold); margin-bottom: 20px;">Download Complete Asset Pack</h2>
+            <p style="color: var(--light-blue); margin-bottom: 30px;">
+                Get all social media assets, brand guidelines, and marketing materials in one comprehensive package.
+            </p>
+            <div>
+                <a href="#" class="download-button">📦 Download Asset Pack</a>
+                <a href="#" class="download-button">🎨 View Brand Guidelines</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

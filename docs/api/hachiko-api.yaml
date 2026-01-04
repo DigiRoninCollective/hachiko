@@ -1,0 +1,292 @@
+openapi: 3.0.0
+info:
+  title: Hachiko Image Library API
+  description: API for accessing Hachiko's image library and fortune card content
+  version: 1.0.0
+  contact:
+    name: Hachiko Team
+    email: info@hachiko.com
+    url: https://hachiko.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.hachiko.com/v1
+    description: Production server
+  - url: https://staging-api.hachiko.com/v1
+    description: Staging server
+  - url: http://localhost:3001/v1
+    description: Development server
+
+paths:
+  /images:
+    get:
+      summary: Get all Hachiko images
+      description: Retrieve a collection of Hachiko images with metadata
+      tags:
+        - Images
+      parameters:
+        - name: category
+          in: query
+          description: Filter images by category
+          schema:
+            type: string
+            enum: [statues, historical, artistic, akita-breed]
+        - name: limit
+          in: query
+          description: Number of images to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HachikoImage'
+                  total:
+                    type: integer
+                    example: 100
+                  page:
+                    type: integer
+                    example: 1
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /images/{imageId}:
+    get:
+      summary: Get specific Hachiko image
+      description: Retrieve detailed information about a specific Hachiko image
+      tags:
+        - Images
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          description: Unique identifier of the image
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HachikoImage'
+        '404':
+          description: Image not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /fortune-cards:
+    get:
+      summary: Get Hachiko fortune cards
+      description: Retrieve Hachiko-themed fortune card content
+      tags:
+        - Fortune Cards
+      parameters:
+        - name: category
+          in: query
+          description: Filter fortune cards by category
+          schema:
+            type: string
+            enum: [wisdom, dog_fact, loyalty, devotion, companionship]
+        - name: style
+          in: query
+          description: Filter by content style
+          schema:
+            type: string
+            enum: [elegant, profound, japanese, historical, breed]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cards:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FortuneCard'
+                  total:
+                    type: integer
+                    example: 50
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /fortune-cards/random:
+    get:
+      summary: Get random Hachiko fortune card
+      description: Retrieve a random Hachiko-themed fortune card
+      tags:
+        - Fortune Cards
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FortuneCard'
+        '404':
+          description: No fortune cards available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    HachikoImage:
+      type: object
+      required:
+        - id
+        - title
+        - category
+        - url
+      properties:
+        id:
+          type: string
+          example: "hachiko-statue-shibuya-001"
+          description: Unique identifier for the image
+        title:
+          type: string
+          example: "Main Shibuya Station Statue"
+          description: Title of the image
+        description:
+          type: string
+          example: "The iconic bronze statue at Shibuya Station, unveiled in 1948"
+          description: Detailed description of the image
+        category:
+          type: string
+          enum: [statues, historical, artistic, akita-breed]
+          example: "statues"
+          description: Category of the image
+        url:
+          type: string
+          format: uri
+          example: "https://cdn.hachiko.com/images/statues/shibuya-statue.jpg"
+          description: URL to the image file
+        thumbnailUrl:
+          type: string
+          format: uri
+          example: "https://cdn.hachiko.com/images/statues/shibuya-statue-thumb.jpg"
+          description: URL to the thumbnail image
+        metadata:
+          type: object
+          properties:
+            location:
+              type: string
+              example: "Shibuya, Tokyo, Japan"
+            dateTaken:
+              type: string
+              format: date
+              example: "2023-04-15"
+            photographer:
+              type: string
+              example: "Vinicius"
+            tags:
+              type: array
+              items:
+                type: string
+              example: ["memorial", "bronze", "loyalty"]
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-04-15T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-04-15T10:30:00Z"
+
+    FortuneCard:
+      type: object
+      required:
+        - id
+        - text
+        - category
+        - style
+      properties:
+        id:
+          type: string
+          example: "wisdom-001"
+          description: Unique identifier for the fortune card
+        text:
+          type: string
+          example: "Some loyalty can't be taught... it just exists in the purest of hearts."
+          description: The fortune card text content
+        category:
+          type: string
+          enum: [wisdom, dog_fact, loyalty, devotion, companionship]
+          example: "wisdom"
+          description: Category of the fortune card
+        style:
+          type: string
+          enum: [elegant, profound, japanese, historical, breed]
+          example: "profound"
+          description: Writing style of the fortune card
+        author:
+          type: string
+          example: "Hachiko Wisdom"
+          description: Author or source of the wisdom
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-04-15T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-04-15T10:30:00Z"
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+        - timestamp
+      properties:
+        error:
+          type: string
+          example: "Not Found"
+          description: Error code
+        message:
+          type: string
+          example: "The requested resource was not found"
+          description: Human-readable error message
+        timestamp:
+          type: string
+          format: date-time
+          example: "2023-04-15T10:30:00Z"
+          description: When the error occurred
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication for API access
+
+tags:
+  - name: Images
+    description: Hachiko image management
+  - name: Fortune Cards
+    description: Hachiko fortune card content

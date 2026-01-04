@@ -1,0 +1,35 @@
+{
+  "name": "nomnom-dex-cli",
+  "version": "1.0.0",
+  "description": "CLI tool to interact with DEX Screener and other DEX APIs for NOMNOM memecoin",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "nomnom-dex": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "dex",
+    "dexscreener",
+    "cli",
+    "blockchain",
+    "crypto",
+    "defi",
+    "nomnom"
+  ],
+  "author": "NOMNOM Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "chalk": "^5.3.0",
+    "cli-chart": "^0.3.1",
+    "commander": "^11.1.0",
+    "ora": "^7.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
