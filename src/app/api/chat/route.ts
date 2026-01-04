@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server';
-import { 
-  isUserRateLimited, 
-  saveMessage, 
-  getRecentMessages, 
-  isValidUsername, 
+import {
+  isUserRateLimited,
+  saveMessage,
+  getRecentMessages,
+  getOrCreateUser,
+  isValidUsername,
   moderateMessage,
   ChatMessage
 } from '@/lib/chat-service';
@@ -11,7 +12,7 @@ import {
 export async function POST(request: NextRequest) {
   try {
     const { userId, username, message } = await request.json();
-    
+
     // Validate required fields
     if (!userId || !username || !message) {
       return Response.json({ error: 'Missing required fields: userId, username, message' }, { status: 400 });
@@ -33,23 +34,21 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Message contains inappropriate content' }, { status: 400 });
     }
 
-    // Create the chat message object
-    const chatMessage: ChatMessage = {
-      id: `msg_${Date.now()}`,
-      userId,
+    // Get or create user first (required for foreign key constraint)
+    const user = await getOrCreateUser(username);
+
+    // Create the chat message object and save to database
+    const chatMessage = await saveMessage({
+      userId: user.id,
       username,
       message: moderationResult.cleanedMessage,
-      timestamp: new Date(),
       ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
-    };
-
-    // Save the message
-    await saveMessage(chatMessage);
+    });
 
     // Return success
-    return Response.json({ 
-      success: true, 
-      message: chatMessage 
+    return Response.json({
+      success: true,
+      message: chatMessage
     });
   } catch (error) {
     console.error('Error handling chat message:', error);
@@ -62,7 +61,7 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const messages = await getRecentMessages(limit);
-    
+
     return Response.json({ messages });
   } catch (error) {
     console.error('Error fetching chat messages:', error);

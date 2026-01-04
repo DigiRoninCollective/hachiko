@@ -9,6 +9,13 @@ interface ChatMessage {
   timestamp: Date;
 }
 
+interface TokenStats {
+  price: string;
+  change24h: string;
+  volume24h: string;
+  marketCap: string;
+}
+
 const ChartChatView = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -18,6 +25,12 @@ const ChartChatView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [tokenStats, setTokenStats] = useState<TokenStats>({
+    price: '$0.00000000',
+    change24h: '0.00%',
+    volume24h: '$0',
+    marketCap: '$0'
+  });
 
   // Initialize user and fetch messages
   useEffect(() => {
@@ -43,9 +56,36 @@ const ChartChatView = () => {
 
       // Fetch recent messages
       fetchRecentMessages();
+      
+      // Fetch token data
+      fetchTokenData();
+
       setIsInitialized(true);
     }
   }, [isInitialized]);
+
+  // Fetch token data
+  const fetchTokenData = async () => {
+    try {
+      const response = await fetch('/api/token-data');
+      if (response.ok) {
+        const data = await response.json();
+        // Assuming the first pair is the most relevant
+        const pair = data.pairs && data.pairs[0];
+        
+        if (pair) {
+          setTokenStats({
+            price: `$${pair.priceUsd || '0.00'}`,
+            change24h: `${pair.priceChange?.h24 || 0}%`,
+            volume24h: `$${(pair.volume?.h24 || 0).toLocaleString()}`,
+            marketCap: pair.marketCap ? `$${pair.marketCap.toLocaleString()}` : (pair.fdv ? `$${pair.fdv.toLocaleString()}` : '$0')
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch token data:', err);
+    }
+  };
 
   // Fetch recent messages from the API
   const fetchRecentMessages = async () => {
@@ -204,19 +244,21 @@ const ChartChatView = () => {
           <div className="mt-4 grid grid-cols-4 gap-4">
             <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
               <p className="text-[#C2B280] text-sm">Price</p>
-              <p className="text-white font-semibold">$0.001234</p>
+              <p className="text-white font-semibold">{tokenStats.price}</p>
             </div>
             <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
               <p className="text-[#C2B280] text-sm">24h Change</p>
-              <p className="text-green-500 font-semibold">+12.34%</p>
+              <p className={`${tokenStats.change24h.startsWith('-') ? 'text-red-500' : 'text-green-500'} font-semibold`}>
+                {tokenStats.change24h.startsWith('-') ? '' : '+'}{tokenStats.change24h}
+              </p>
             </div>
             <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
               <p className="text-[#C2B280] text-sm">Volume (24h)</p>
-              <p className="text-white font-semibold">$1.23M</p>
+              <p className="text-white font-semibold">{tokenStats.volume24h}</p>
             </div>
             <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
               <p className="text-[#C2B280] text-sm">Market Cap</p>
-              <p className="text-white font-semibold">$12.34M</p>
+              <p className="text-white font-semibold">{tokenStats.marketCap}</p>
             </div>
           </div>
         </div>

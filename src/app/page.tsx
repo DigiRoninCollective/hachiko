@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Script from "next/script";
 import { useState, useEffect, useRef } from "react";
-import { ExternalLink, Copy, Check, TrendingUp, X } from "lucide-react";
+import { ExternalLink, Copy, Check, TrendingUp, X, ChevronRight, ChevronLeft } from "lucide-react";
 import { 
   BookOpenIcon, 
   AcademicCapIcon, 
@@ -27,19 +27,7 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState(0);
-  const [lightboxImage, setLightboxImage] = useState<{
-    src: string;
-    alt: string;
-    label: string;
-  } | null>(null);
-
-  useEffect(() => {
-    // Initialize scroll position on mount
-    if (containerRef.current) {
-      containerRef.current.scrollTo({ left: 0, behavior: 'auto' });
-    }
-  }, []);
-
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const sections = [
     { id: "hero", title: "Home" },
@@ -49,6 +37,39 @@ export default function Home() {
     { id: "gallery", title: "Gallery" },
     { id: "wisdom", title: "Wisdom" },
     { id: "faq", title: "FAQ" }
+  ];
+
+  const galleryImages = [
+    {
+      src: "/images/hachiko/hachiko-memorial.jpg",
+      alt: "Hachiko Memorial Statue at Shibuya",
+      label: "Shibuya Legacy — Hachiko Memorial"
+    },
+    {
+      src: "/images/hachiko/hachiko-waiting.webp",
+      alt: "Hachiko waiting at Shibuya Station",
+      label: "Daily Vigil — Waiting at the Station"
+    },
+    {
+      src: "/images/hachiko/hachiko-family.webp",
+      alt: "Hachiko with the Ueno family",
+      label: "The Bond — Hachiko with Family"
+    },
+    {
+      src: "/images/hachiko/hachiko-funeral.webp",
+      alt: "Farewell to Hachiko in 1935",
+      label: "1935 — Farewell and Tribute"
+    },
+    {
+      src: "/hachiko-bronze-statue-shibuya.jpg",
+      alt: "Bronze statue of Hachiko in Shibuya",
+      label: "Shibuya Icon — Bronze Statue"
+    },
+    {
+      src: "/hachiko-original-1935-wikipedia.jpg",
+      alt: "Hachiko portrait, 1930s",
+      label: "Archive — Original Portrait"
+    }
   ];
 
   const contractAddress = "HACH1Ko11111111111111111111111111111111";
@@ -66,158 +87,90 @@ export default function Home() {
   const scrollToSection = (index: number) => {
     if (containerRef.current) {
       const container = containerRef.current;
-      const containerWidth = container.clientWidth;
-      const targetScroll = containerWidth * index;
-
-      // Use smooth scrolling with a more reliable approach
+      const width = container.clientWidth;
       container.scrollTo({
-        left: targetScroll,
-        behavior: "smooth"
+        left: width * index,
+        behavior: 'smooth'
       });
-
-      // Update active section after a short delay to ensure scroll completes
-      setTimeout(() => {
-        setActiveSection(index);
-
-        // Ensure the container is scrolled to the exact position
-        if (containerRef.current) {
-          const currentContainer = containerRef.current;
-          const currentScroll = currentContainer.scrollLeft;
-          if (Math.abs(currentScroll - targetScroll) > 1) {
-            // If we're not exactly at the target, adjust to the exact position
-            currentContainer.scrollTo({
-              left: targetScroll,
-              behavior: "auto" // Use auto to avoid animation conflicts
-            });
-          }
-        }
-      }, 300);
+      setActiveSection(index);
+      setIsMobileMenuOpen(false);
     }
   };
 
-  // Debounce scroll event to improve performance
-  const debounce = (func: Function, wait: number) => {
-    let timeout: NodeJS.Timeout;
-    return function executedFunction(...args: any[]) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  };
-
-  const handleScroll = () => {
-    if (containerRef.current) {
-      const container = containerRef.current;
-      const scrollLeft = container.scrollLeft;
-      const containerWidth = container.clientWidth;
-
-      // Calculate the current section based on scroll position
-      let currentSection = 0;
-      if (containerWidth > 0) {
-        currentSection = Math.round(scrollLeft / containerWidth);
-        // Ensure we don't exceed the number of sections
-        currentSection = Math.min(currentSection, sections.length - 1);
-        currentSection = Math.max(currentSection, 0);
-      }
-
-      // Only update if we've moved to a different section
-      if (currentSection !== activeSection) {
-        setActiveSection(currentSection);
-      }
-    }
-  };
-
-  const debouncedHandleScroll = debounce(handleScroll, 150);
-
-  // Add a cleanup function for the scroll listener
+  // Update active section on scroll
   useEffect(() => {
     const container = containerRef.current;
-    if (container) {
-      container.addEventListener("scroll", debouncedHandleScroll);
-      return () => container.removeEventListener("scroll", debouncedHandleScroll);
-    }
-  }, [debouncedHandleScroll]); // Include debouncedHandleScroll in the dependency array
+    if (!container) return;
 
-  // Ensure proper cleanup when component unmounts
-  useEffect(() => {
-    return () => {
-      // Clear any pending timeouts to prevent memory leaks
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const width = container.clientWidth;
+      const index = Math.round(scrollLeft / width);
+      if (index !== activeSection) {
+        setActiveSection(index);
+      }
     };
-  }, []);
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [activeSection]);
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#1a1a1a]">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[rgba(26,26,26,0.95)] backdrop-blur-md border-b border-[rgba(212,175,55,0.3)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
-              <svg className="w-7 h-7 text-[#D4AF37]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C10.9 2 10 2.9 10 4C10 4.74 10.4 5.38 11 5.73V8C9 8 7.5 9.5 7.5 11.5C7.5 11.85 7.57 12.19 7.69 12.5L6.5 13.5C6.19 13.19 5.85 13 5.5 13C4.67 13 4 13.67 4 14.5C4 15.33 4.67 16 5.5 16C5.85 16 6.19 15.81 6.5 15.5L7.69 16.5C8.45 17.44 9.64 18 11 18H13C14.36 18 15.55 17.44 16.31 16.5L17.5 15.5C17.81 15.81 18.15 16 18.5 16C19.33 16 20 15.33 20 14.5C20 13.67 19.33 13 18.5 13C18.15 13 17.81 13.19 17.5 13.5L16.31 12.5C16.43 12.19 16.5 11.85 16.5 11.5C16.5 9.5 15 8 13 8V5.73C13.6 5.38 14 4.74 14 4C14 2.9 13.1 2 12 2M12 9C13.1 9 14 9.9 14 11C14 12.1 13.1 13 12 13C10.9 13 10 12.1 10 11C10 9.9 10.9 9 12 9M10 20C10 21.1 10.9 22 12 22C13.1 22 14 21.1 14 20H10Z" />
-              </svg>
-              <span className="text-xl font-bold text-[#D4AF37]">Hachiko</span>
-            </div>
-            <div className="hidden md:flex space-x-8">
-              {sections.map((section, index) => (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(index)}
-                  className={`hover:text-[#D4AF37] transition-colors text-white ${
-                    activeSection === index ? "text-[#C2B280]" : ""
-                  }`}
-                  aria-label={`Go to ${section.title} section`}
-                  aria-current={activeSection === index ? "page" : undefined}
-                >
-                  {section.title}
-                </button>
-              ))}
-            </div>
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white hover:text-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] rounded-md p-1"
-                aria-expanded={isMobileMenuOpen}
-                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-              >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
-              </button>
-            </div>
+    <div className="relative h-screen w-screen overflow-hidden bg-[#1a1a1a] text-white">
+      {/* Header/Nav */}
+      <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#1a1a1a]/95 backdrop-blur-md border-b border-[rgba(212,175,55,0.3)]">
+        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+          <div 
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={() => scrollToSection(0)}
+          >
+            <svg className="w-7 h-7 text-[#D4AF37]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C10.9 2 10 2.9 10 4C10 4.74 10.4 5.38 11 5.73V8C9 8 7.5 9.5 7.5 11.5C7.5 11.85 7.57 12.19 7.69 12.5L6.5 13.5C6.19 13.19 5.85 13 5.5 13C4.67 13 4 13.67 4 14.5C4 15.33 4.67 16 5.5 16C5.85 16 6.19 15.81 6.5 15.5L7.69 16.5C8.45 17.44 9.64 18 11 18H13C14.36 18 15.55 17.44 16.31 16.5L17.5 15.5C17.81 15.81 18.15 16 18.5 16C19.33 16 20 15.33 20 14.5C20 13.67 19.33 13 18.5 13C18.15 13 17.81 13.19 17.5 13.5L16.31 12.5C16.43 12.19 16.5 11.85 16.5 11.5C16.5 9.5 15 8 13 8V5.73C13.6 5.38 14 4.74 14 4C14 2.9 13.1 2 12 2M12 9C13.1 9 14 9.9 14 11C14 12.1 13.1 13 12 13C10.9 13 10 12.1 10 11C10 9.9 10.9 9 12 9M10 20C10 21.1 10.9 22 12 22C13.1 22 14 21.1 14 20H10Z" />
+            </svg>
+            <span className="text-xl font-bold text-[#D4AF37]">Hachiko</span>
           </div>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex space-x-6">
+            {sections.map((section, idx) => (
+              <button
+                key={section.id}
+                onClick={() => scrollToSection(idx)}
+                className={`text-sm font-medium transition-colors ${
+                  activeSection === idx ? "text-[#D4AF37]" : "text-white/70 hover:text-white"
+                }`}
+              >
+                {section.title}
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden text-white hover:text-[#D4AF37]"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {isMobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div
-            className="md:hidden bg-[#1a1a1a] border-t border-[rgba(212,175,55,0.3)]"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Mobile Navigation Menu"
-          >
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              {sections.map((section, index) => (
+          <div className="absolute top-16 left-0 right-0 bg-[#1a1a1a] border-b border-[rgba(212,175,55,0.3)] p-4 md:hidden">
+            <div className="flex flex-col space-y-3">
+              {sections.map((section, idx) => (
                 <button
                   key={section.id}
-                  onClick={() => {
-                    scrollToSection(index);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className={`block px-3 py-2 rounded-md text-base font-medium w-full text-left ${
-                    activeSection === index
-                      ? "text-[#C2B280] bg-[#D4AF37]/10"
-                      : "text-white hover:text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                  onClick={() => scrollToSection(idx)}
+                  className={`text-left py-2 px-3 rounded ${
+                    activeSection === idx ? "bg-[#D4AF37]/10 text-[#D4AF37]" : "text-white/80"
                   }`}
-                  aria-label={`Go to ${section.title} section`}
-                  aria-current={activeSection === index ? "page" : undefined}
                 >
                   {section.title}
                 </button>
@@ -227,187 +180,209 @@ export default function Home() {
         )}
       </nav>
 
-      {/* Horizontal Scrolling Container */}
-      <div
+      {/* Main Horizontal Scroll Container */}
+      <div 
         ref={containerRef}
-        className="flex h-full w-full overflow-x-auto snap-x snap-mandatory scroll-smooth"
-        style={{
-          scrollBehavior: 'smooth',
-          WebkitOverflowScrolling: 'touch', // For better touch scrolling on iOS
-          scrollSnapType: 'x mandatory' // Additional CSS for better snap behavior
-        }}
-        onTouchStart={(e) => {
-          // Store the initial touch position for swipe detection
-          const touchStartX = e.touches[0].clientX;
-          const element = e.currentTarget;
-
-          const handleTouchMove = (moveEvent: TouchEvent) => {
-            const touchCurrentX = moveEvent.touches[0].clientX;
-            const diffX = touchStartX - touchCurrentX;
-
-            // If swipe is significant, prevent default to allow horizontal scroll
-            if (Math.abs(diffX) > 5) {
-              // Allow the default horizontal scrolling behavior
-            }
-          };
-
-          const handleTouchEnd = (endEvent: TouchEvent) => {
-            // Calculate final position and potentially snap to section
-            const touchEndX = endEvent.changedTouches[0].clientX;
-            const diffX = touchStartX - touchEndX;
-
-            // Determine direction of swipe
-            if (Math.abs(diffX) > 30) { // Minimum swipe distance
-              if (diffX > 0) {
-                // Swiping left - go to next section
-                if (activeSection < sections.length - 1) {
-                  scrollToSection(activeSection + 1);
-                }
-              } else {
-                // Swiping right - go to previous section
-                if (activeSection > 0) {
-                  scrollToSection(activeSection - 1);
-                }
-              }
-            } else {
-              // If swipe was not significant, snap back to current section
-              scrollToSection(activeSection);
-            }
-
-            // Remove event listeners
-            element.removeEventListener('touchmove', handleTouchMove as any);
-            element.removeEventListener('touchend', handleTouchEnd as any);
-          };
-
-          element.addEventListener('touchmove', handleTouchMove as any, { passive: false });
-          element.addEventListener('touchend', handleTouchEnd as any);
-        }}
+        className="flex h-full w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth"
+        style={{ scrollbarWidth: 'none' }} // Hide scrollbar for cleaner look
       >
-        {/* Hero Section */}
-        <section className="min-w-full h-full flex-shrink-0 flex items-center justify-center snap-start relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-[rgba(26,26,26,0.9)] via-[rgba(212,175,55,0.3)] to-[rgba(194,178,128,0.2)]"></div>
-          <div className="relative z-10 flex items-center justify-between w-full max-w-7xl mx-auto px-4">
-            <div className="flex-1 text-left">
-              <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-white to-[#D4AF37] bg-clip-text text-transparent">
-                Hachiko
-              </h1>
-              <p className="text-xl md:text-2xl mb-8 text-white max-w-2xl">
-                Japan's Most Loyal Dog - A Story of Unwavering Devotion
-              </p>
-              <div className="flex flex-wrap gap-8 mb-12">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-[#D4AF37]">10+</div>
-                  <div className="text-sm text-[#C2B280]">Years of Waiting</div>
+        
+        {/* SECTION 1: HERO */}
+        <section className="min-w-full h-full snap-start relative flex items-center justify-center pt-16">
+          {/* Internal overflow-y-auto allows content to scroll vertically if it exceeds screen height */}
+          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+            <div className="min-h-full flex flex-col md:flex-row items-center justify-center max-w-7xl mx-auto gap-8 md:gap-16">
+              
+              <div className="flex-1 text-center md:text-left space-y-6">
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-white via-[#fff8e1] to-[#D4AF37] bg-clip-text text-transparent">
+                  Hachiko
+                </h1>
+                <p className="text-xl md:text-2xl text-white/90 max-w-xl mx-auto md:mx-0">
+                  Japan's Most Loyal Dog — A Story of Unwavering Devotion Reborn on Solana.
+                </p>
+                <div className="flex flex-wrap justify-center md:justify-start gap-8">
+                  <div>
+                    <div className="text-3xl font-bold text-[#D4AF37]">10+</div>
+                    <div className="text-xs text-[#C2B280] uppercase">Years Waiting</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-[#D4AF37]">1935</div>
+                    <div className="text-xs text-[#C2B280] uppercase">Legacy Year</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-[#D4AF37]">∞</div>
+                    <div className="text-xs text-[#C2B280] uppercase">Loyalty</div>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-[#D4AF37]">1935</div>
-                  <div className="text-sm text-[#C2B280]">Legacy Year</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-[#D4AF37]">∞</div>
-                  <div className="text-sm text-[#C2B280]">Infinite Loyalty</div>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <a
-                  href="https://pump.fun"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black px-8 py-3 rounded-lg font-semibold transition-all inline-flex items-center"
-                >
-                  Buy on pump.fun
-                </a>
-                <button
-                  onClick={() => scrollToSection(3)}
-                  className="border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-8 py-3 rounded-lg font-semibold transition-all inline-flex items-center"
-                >
-                  Read the Story
-                </button>
-              </div>
-            </div>
-            <div className="flex-1 flex justify-center">
-              <div className="relative w-96 h-96">
-                <Image
-                  src="/images/hachiko/hachiko-family.webp"
-                  alt="Hachiko"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Contract Address Section */}
-        <section className="min-w-full h-full flex-shrink-0 flex items-center justify-center px-4 snap-start">
-          <div className="w-full max-w-6xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-[rgba(212,175,55,0.3)]">
-              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-3">
-                  <Image src="/solana.svg" alt="Solana" width={32} height={32} />
-                  <h2 className="text-2xl font-bold text-[#D4AF37]">
-                    Hachiko Token on Solana
-                  </h2>
-                </div>
-                <div className="bg-[#1a1a1a] text-[#D4AF37] px-3 py-1 rounded-full text-sm font-semibold border border-[#D4AF37]/40">
-                  Launching on pump.fun
-                </div>
-              </div>
-              <div className="mb-6">
-                <div className="flex gap-2 mb-4">
-                  <input
-                    type="text"
-                    value={contractAddress}
-                    readOnly
-                    className="flex-1 bg-[#1a1a1a] border border-[rgba(212,175,55,0.3)] rounded-lg px-4 py-3 font-mono text-white"
-                  />
-                  <button
-                    onClick={copyToClipboard}
-                    className="bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2"
-                  >
-                    {copiedAddress ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    {copiedAddress ? "Copied!" : "Copy"}
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <span className="bg-[#1a1a1a]/30 text-white px-3 py-1 rounded-full text-sm">Solana</span>
-                  <span className="bg-[#1a1a1a]/30 text-white px-3 py-1 rounded-full text-sm">pump.fun launch</span>
-                  <span className="bg-[#1a1a1a]/30 text-white px-3 py-1 rounded-full text-sm">Bonding curve to Raydium</span>
-                </div>
-              </div>
-              <div className="grid gap-6 md:grid-cols-[1fr,1.1fr]">
-                <div className="flex flex-wrap gap-4">
-                  <a href="https://pump.fun" target="_blank" rel="noreferrer" className="bg-gradient-to-r from-[#1a1a1a] to-[#D4AF37] hover:from-[#1a1a1a]/90 hover:to-[#D4AF37]/90 text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2">
-                    <ExternalLink className="w-4 h-4" />
+                <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
+                  <a href="https://pump.fun" target="_blank" className="bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black px-8 py-3 rounded-xl font-bold shadow-lg transition-transform hover:-translate-y-1">
                     Buy on pump.fun
                   </a>
-                  <a href="https://solscan.io" target="_blank" rel="noreferrer" className="bg-gradient-to-r from-[#1a1a1a] to-[#D4AF37] hover:from-[#1a1a1a]/90 hover:to-[#D4AF37]/90 text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2">
-                    <ExternalLink className="w-4 h-4" />
-                    Solscan
-                  </a>
-                  <a href="https://t.me/HachikoFunCom" target="_blank" rel="noreferrer" className="bg-gradient-to-r from-[#1a1a1a] to-[#D4AF37] hover:from-[#1a1a1a]/90 hover:to-[#D4AF37]/90 text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2">
-                    <ExternalLink className="w-4 h-4" />
-                    Join Telegram
-                  </a>
+                  <button onClick={() => scrollToSection(3)} className="border-2 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-8 py-3 rounded-xl font-bold transition-all">
+                    Read the Story
+                  </button>
                 </div>
-                <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-                  <h3 className="text-lg font-semibold text-[#D4AF37] mb-3">How to Buy</h3>
-                  <ol className="space-y-2 text-[#DBEAFE] text-sm">
-                    <li>1. Get a Solana wallet (Phantom or Solflare).</li>
-                    <li>2. Fund it with SOL from your exchange.</li>
-                    <li>3. Buy on pump.fun using the contract address.</li>
-                    <li>4. Track price and volume after Raydium migration.</li>
-                  </ol>
+              </div>
+
+              <div className="flex-1 flex justify-center">
+                <div className="relative w-[300px] md:w-[450px] aspect-square">
+                  <div className="absolute inset-0 bg-[#D4AF37] blur-[80px] opacity-20 rounded-full"></div>
+                  <Image src="/images/hachiko/hachiko-family.webp" alt="Hachiko" fill className="object-contain drop-shadow-2xl relative z-10" priority />
                 </div>
-                <div className="rounded-xl border border-white/10 bg-white/5 p-5 md:col-span-2">
-                  <h3 className="text-lg font-semibold text-[#D4AF37] mb-3">Community Feed</h3>
-                  <div className="min-h-[260px]">
-                    <Script
-                      src="https://telegram.org/js/telegram-widget.js?22"
-                      strategy="lazyOnload"
-                      data-telegram-post="HachikoFunCom/2"
-                      data-width="100%"
-                    />
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 2: TOKEN */}
+        <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
+          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+            <div className="min-h-full flex flex-col items-center justify-center max-w-7xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-4xl md:text-5xl font-bold text-[#F59E0B]">Hachiko Token</h2>
+                <p className="text-[#DBEAFE] mt-2">Built on Solana. Designed for loyalty.</p>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-8 w-full">
+                <div className="space-y-6">
+                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+                    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                      <Image src="/solana.svg" alt="SOL" width={24} height={24} /> Contract Address
+                    </h3>
+                    <div className="relative">
+                      <input type="text" value={contractAddress} readOnly className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 font-mono text-sm text-gray-300 focus:outline-none" />
+                      <button onClick={copyToClipboard} className="absolute right-2 top-2 bottom-2 bg-[#D4AF37] text-black px-3 rounded text-xs font-bold hover:bg-[#D4AF37]/90">
+                        {copiedAddress ? "Copied!" : "Copy"}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <a
+                      href="https://pump.fun"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                    >
+                      <Image src="/icons/pumpfun.png" alt="Pump.fun" width={18} height={18} />
+                      Pump.fun
+                    </a>
+                    <a
+                      href="https://solscan.io"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                    >
+                      <Image src="/icons/solscan.png" alt="Solscan" width={18} height={18} />
+                      Solscan
+                    </a>
+                    <a
+                      href="https://t.me/HachikoFunCom"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                    >
+                      <Image src="/icons/telegram.svg" alt="Telegram" width={18} height={18} />
+                      Telegram
+                    </a>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="text-sm font-semibold text-[#D4AF37] mb-3">Community</div>
+                    <div className="min-h-[220px]">
+                      <Script
+                        src="https://telegram.org/js/telegram-widget.js?22"
+                        strategy="lazyOnload"
+                        data-telegram-post="HachikoFunCom/2"
+                        data-width="100%"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                      <div className="text-[#D4AF37] font-bold text-lg">1B Supply</div>
+                      <div className="text-xs text-white/60">Total Token Supply</div>
+                    </div>
+                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                      <div className="text-[#D4AF37] font-bold text-lg">0% Tax</div>
+                      <div className="text-xs text-white/60">Buy/Sell Tax</div>
+                    </div>
+                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                      <div className="text-[#D4AF37] font-bold text-lg">Mint Revoked</div>
+                      <div className="text-xs text-white/60">Fixed Supply</div>
+                    </div>
+                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                      <div className="text-[#D4AF37] font-bold text-lg">Liquidity</div>
+                      <div className="text-xs text-white/60">Burned on Raydium</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white/5 rounded-2xl p-1 border border-white/10 overflow-hidden min-h-[300px]">
+                  <ChartChatView />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3: SYMBOLS */}
+        <section className="min-w-full h-full snap-start pt-16">
+          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+            <div className="min-h-full flex flex-col items-center justify-center max-w-7xl mx-auto">
+              <h2 className="text-4xl font-bold text-[#F59E0B] mb-12 text-center">Symbols of Devotion</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+                {[
+                  { icon: ClockIcon, title: "9 Years", desc: "The duration of his daily vigil at Shibuya." },
+                  { icon: MapPinIcon, title: "Shibuya", desc: "The station where the legend was born." },
+                  { icon: HeartIcon, title: "Loyalty", desc: "The virtue that defines our community." },
+                  { icon: SparklesIcon, title: "Statue", desc: "The bronze monument honoring his spirit." }
+                ].map((item, i) => (
+                  <div key={i} className="bg-white/5 p-8 rounded-3xl border border-[#D4AF37]/20 hover:-translate-y-2 transition-all duration-300">
+                    <div className="w-12 h-12 bg-[#D4AF37]/20 rounded-full flex items-center justify-center mb-6">
+                      <item.icon className="w-6 h-6 text-[#D4AF37]" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+                    <p className="text-white/60 text-sm">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4: LORE */}
+        <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
+          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+            <div className="min-h-full flex flex-col items-center justify-center max-w-6xl mx-auto">
+              <h2 className="text-4xl font-bold text-[#F59E0B] mb-12">The Lore</h2>
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="space-y-8">
+                  <div>
+                    <h3 className="text-2xl font-semibold text-[#FEF3C7] mb-2">The Beginning</h3>
+                    <p className="text-white/80 leading-relaxed">Born in 1923, Hachiko formed an unbreakable bond with Professor Ueno. Every day, they walked to the station together, and every evening, Hachiko was there to welcome him home.</p>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-semibold text-[#FEF3C7] mb-2">The Vigil</h3>
+                    <p className="text-white/80 leading-relaxed">After the Professor's sudden death in 1925, Hachiko continued to return to Shibuya Station every single day for nearly 10 years, waiting for a reunion that would never come in this life.</p>
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-3xl p-8 border border-white/10">
+                  <div className="space-y-6 border-l-2 border-[#D4AF37]/30 ml-2 pl-8 relative">
+                    {[
+                      { year: "1923", text: "Born in Odate, Akita Prefecture." },
+                      { year: "1925", text: "Professor Ueno passes away. The vigil begins." },
+                      { year: "1934", text: "Bronze statue unveiled at Shibuya." },
+                      { year: "1935", text: "Hachiko passes away, becoming a legend." }
+                    ].map((item, i) => (
+                      <div key={i} className="relative">
+                        <div className="absolute -left-[41px] top-1 w-5 h-5 rounded-full bg-[#D4AF37] border-4 border-[#1a1a1a]"></div>
+                        <div className="text-[#D4AF37] font-bold">{item.year}</div>
+                        <div className="text-white/70 text-sm">{item.text}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -415,381 +390,90 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Story Section */}
-        <section className="min-w-full h-full flex-shrink-0 flex items-center justify-center px-4 overflow-y-auto snap-start">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#F59E0B]">Lore of Hachiko</h2>
-            <div className="grid md:grid-cols-2 gap-12">
-              <div>
-                <h3 className="text-2xl font-semibold mb-4 text-[#FEF3C7] flex items-center gap-2">
-                  <BookOpenIcon className="w-6 h-6" />
-                  The Beginning
-                </h3>
-                <p className="text-lg mb-6 text-[#DBEAFE]">
-                  Hachiko was born on November 10, 1923, in Odate, Akita Prefecture, Japan. He was brought to Tokyo in 1924 by his owner, Professor Hidesaburo Ueno, a professor at the Imperial University of Tokyo.
-                </p>
-                <h3 className="text-2xl font-semibold mb-4 text-[#FEF3C7] flex items-center gap-2">
-                  <AcademicCapIcon className="w-6 h-6" />
-                  The Bond
-                </h3>
-                <p className="text-lg mb-6 text-[#DBEAFE]">
-                  Professor Ueno and Hachiko formed an incredibly strong bond. Each day, Hachiko would accompany his owner to Shibuya Station and wait for him to return from work.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-2xl font-semibold mb-4 text-[#FEF3C7] flex items-center gap-2">
-                  <HeartIcon className="w-6 h-6" />
-                  The Tragedy
-                </h3>
-                <p className="text-lg mb-6 text-[#DBEAFE]">
-                  On May 21, 1925, Professor Ueno suffered a fatal brain hemorrhage while at work and never returned home. Hachiko was just 18 months old.
-                </p>
-                <h3 className="text-2xl font-semibold mb-4 text-[#FEF3C7] flex items-center gap-2">
-                  <ClockIcon className="w-6 h-6" />
-                  The Vigil
-                </h3>
-                <p className="text-lg mb-6 text-[#DBEAFE]">
-                  For the next 9 years, 9 months, and 15 days, Hachiko continued to wait at Shibuya Station every day, precisely when the trains were due, hoping his owner would return.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-[rgba(245,158,11,0.3)]">
-              <div className="flex items-center gap-2 text-[#F59E0B] font-semibold mb-6">
-                <CalendarIcon className="w-5 h-5" />
-                Lore Timeline
-              </div>
-              <div className="relative grid gap-6 md:grid-cols-4">
-                <div className="hidden md:block absolute left-6 right-6 top-1 h-px bg-[#F59E0B]/30" />
-                <div className="text-center">
-                  <div className="mx-auto h-2 w-2 rounded-full bg-[#F59E0B]"></div>
-                  <div className="mt-3 text-[#F59E0B] font-semibold text-sm">1923</div>
-                  <div className="mt-1 text-[#DBEAFE] text-xs">Born in Odate, Akita</div>
-                </div>
-                <div className="text-center">
-                  <div className="mx-auto h-2 w-2 rounded-full bg-[#F59E0B]"></div>
-                  <div className="mt-3 text-[#F59E0B] font-semibold text-sm">1925</div>
-                  <div className="mt-1 text-[#DBEAFE] text-xs">Vigil begins at Shibuya</div>
-                </div>
-                <div className="text-center">
-                  <div className="mx-auto h-2 w-2 rounded-full bg-[#F59E0B]"></div>
-                  <div className="mt-3 text-[#F59E0B] font-semibold text-sm">1934</div>
-                  <div className="mt-1 text-[#DBEAFE] text-xs">Statue unveiled in Tokyo</div>
-                </div>
-                <div className="text-center">
-                  <div className="mx-auto h-2 w-2 rounded-full bg-[#F59E0B]"></div>
-                  <div className="mt-3 text-[#F59E0B] font-semibold text-sm">1935</div>
-                  <div className="mt-1 text-[#DBEAFE] text-xs">Legacy becomes legend</div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 grid gap-6 md:grid-cols-2">
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-[rgba(245,158,11,0.3)]">
-                <h3 className="text-xl font-semibold mb-3 text-[#F59E0B] flex items-center gap-2">
-                  <MapPinIcon className="w-5 h-5" />
-                  Cultural Legacy
-                </h3>
-                <p className="text-[#DBEAFE] text-sm">
-                  The Hachiko statue anchors Shibuya and reminds the world that loyalty is lived.
-                </p>
-                <div className="mt-3 text-sm text-[#C2B280]">Shibuya Station, Tokyo</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-[rgba(245,158,11,0.3)]">
-                <h3 className="text-xl font-semibold mb-3 text-[#F59E0B] flex items-center gap-2">
-                  <ChartBarIcon className="w-5 h-5" />
-                  Why Tokenize
-                </h3>
-                <p className="text-[#DBEAFE] text-sm">
-                  Preserve the story, unite the loyal, and build cultural value on Solana.
-                </p>
+        {/* SECTION 5: GALLERY */}
+        <section className="min-w-full h-full snap-start pt-16">
+          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+            <div className="min-h-full flex flex-col items-center justify-center max-w-7xl mx-auto">
+              <h2 className="text-4xl font-bold text-[#F59E0B] mb-8">Historical Archives</h2>
+              <div className="grid md:grid-cols-3 gap-4 w-full">
+                {galleryImages.map((img, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`relative group rounded-xl overflow-hidden cursor-pointer border border-white/10 aspect-[4/3] ${idx === 0 ? 'md:col-span-2 md:row-span-2 md:aspect-auto' : ''}`}
+                    onClick={() => setLightboxIndex(idx)}
+                  >
+                    <Image src={img.src} alt={img.alt} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                      <p className="text-white font-medium text-sm">{img.label}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* Image Library Section */}
-        <section className="min-w-full h-full flex-shrink-0 flex items-center justify-center px-4 overflow-y-auto snap-start">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#F59E0B]">Hachiko Image Library</h2>
-            <p className="text-xl text-center mb-12 text-[#DBEAFE] max-w-3xl">
-              A comprehensive visual archive documenting Hachiko's life, legacy, and cultural impact
-            </p>
-            
-            <div className="grid gap-6 md:grid-cols-3 md:auto-rows-[220px] lg:auto-rows-[240px]">
-              <div className="relative group md:col-span-2 md:row-span-2">
-                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/images/hachiko/hachiko-memorial.jpg"
-                    alt="Hachiko Memorial Statue at Shibuya"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4">
-                    <div className="text-[#D4AF37] text-sm font-semibold">Shibuya Legacy</div>
-                    <div className="text-white text-lg font-semibold">Hachiko Memorial</div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setLightboxImage({
-                    src: "/images/hachiko/hachiko-memorial.jpg",
-                    alt: "Hachiko Memorial Statue at Shibuya",
-                    label: "Shibuya Legacy — Hachiko Memorial"
-                  })}
-                  className="absolute inset-0"
-                  aria-label="Open image: Hachiko Memorial"
-                />
-              </div>
-
-              <div className="relative group">
-                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/images/hachiko/hachiko-waiting.webp"
-                    alt="Hachiko waiting at Shibuya Station"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4">
-                    <div className="text-[#D4AF37] text-xs font-semibold">Daily Vigil</div>
-                    <div className="text-white text-base font-semibold">Waiting at the Station</div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setLightboxImage({
-                    src: "/images/hachiko/hachiko-waiting.webp",
-                    alt: "Hachiko waiting at Shibuya Station",
-                    label: "Daily Vigil — Waiting at the Station"
-                  })}
-                  className="absolute inset-0"
-                  aria-label="Open image: Waiting at the Station"
-                />
-              </div>
-
-              <div className="relative group">
-                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/images/hachiko/hachiko-family.webp"
-                    alt="Hachiko with the Ueno family"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4">
-                    <div className="text-[#D4AF37] text-xs font-semibold">The Bond</div>
-                    <div className="text-white text-base font-semibold">Hachiko with Family</div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setLightboxImage({
-                    src: "/images/hachiko/hachiko-family.webp",
-                    alt: "Hachiko with the Ueno family",
-                    label: "The Bond — Hachiko with Family"
-                  })}
-                  className="absolute inset-0"
-                  aria-label="Open image: Hachiko with Family"
-                />
-              </div>
-
-              <div className="relative group">
-                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/images/hachiko/hachiko-funeral.webp"
-                    alt="Farewell to Hachiko in 1935"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4">
-                    <div className="text-[#D4AF37] text-xs font-semibold">1935</div>
-                    <div className="text-white text-base font-semibold">Farewell and Tribute</div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setLightboxImage({
-                    src: "/images/hachiko/hachiko-funeral.webp",
-                    alt: "Farewell to Hachiko in 1935",
-                    label: "1935 — Farewell and Tribute"
-                  })}
-                  className="absolute inset-0"
-                  aria-label="Open image: Farewell and Tribute"
-                />
-              </div>
-
-              <div className="relative group">
-                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/hachiko-bronze-statue-shibuya.jpg"
-                    alt="Bronze statue of Hachiko in Shibuya"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4">
-                    <div className="text-[#D4AF37] text-xs font-semibold">Shibuya Icon</div>
-                    <div className="text-white text-base font-semibold">Bronze Statue</div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setLightboxImage({
-                    src: "/hachiko-bronze-statue-shibuya.jpg",
-                    alt: "Bronze statue of Hachiko in Shibuya",
-                    label: "Shibuya Icon — Bronze Statue"
-                  })}
-                  className="absolute inset-0"
-                  aria-label="Open image: Bronze Statue"
-                />
-              </div>
-
-              <div className="relative group">
-                <div className="relative h-full w-full bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-[rgba(212,175,55,0.3)]">
-                  <Image
-                    src="/hachiko-original-1935-wikipedia.jpg"
-                    alt="Hachiko portrait, 1930s"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4">
-                    <div className="text-[#D4AF37] text-xs font-semibold">Archive</div>
-                    <div className="text-white text-base font-semibold">Original Portrait</div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setLightboxImage({
-                    src: "/hachiko-original-1935-wikipedia.jpg",
-                    alt: "Hachiko portrait, 1930s",
-                    label: "Archive — Original Portrait"
-                  })}
-                  className="absolute inset-0"
-                  aria-label="Open image: Original Portrait"
-                />
+        {/* SECTION 6: WISDOM */}
+        <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
+          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+            <div className="min-h-full flex flex-col items-center justify-center max-w-5xl mx-auto">
+              <h2 className="text-4xl font-bold text-[#F59E0B] mb-6">Wisdom of Hachiko</h2>
+              <p className="text-center text-white/60 mb-12 max-w-2xl">Generate daily wisdom cards inspired by loyalty and perseverance.</p>
+              <div className="w-full">
+                <LoyaltyFortuneGenerator />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Token Section */}
-        <section className="min-w-full h-full flex-shrink-0 flex items-center justify-center px-4 overflow-y-auto snap-start">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#F59E0B]">Hachiko Token</h2>
-            <p className="text-xl text-center mb-12 text-[#DBEAFE] max-w-3xl">
-              A cryptocurrency celebrating the spirit of unwavering loyalty and devotion
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-[rgba(245,158,11,0.3)]">
-                <h3 className="text-2xl font-semibold mb-6 text-[#F59E0B] flex items-center gap-2">
-                  <CurrencyDollarIcon className="w-6 h-6" />
-                  Tokenomics
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-[#FEF3C7]">Total Supply</span>
-                    <span className="text-white font-semibold">1,000,000,000 HACHIKO</span>
+        {/* SECTION 7: FAQ */}
+        <section className="min-w-full h-full snap-start pt-16">
+          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+            <div className="min-h-full flex flex-col items-center justify-center max-w-3xl mx-auto">
+              <h2 className="text-4xl font-bold text-[#F59E0B] mb-12">FAQ</h2>
+              <div className="space-y-4 w-full">
+                {[
+                  { q: "Where can I buy Hachiko token?", a: "Hachiko is available on pump.fun on the Solana network." },
+                  { q: "Is this an official project?", a: "This is a community-driven tribute project honoring the legacy of Hachiko." },
+                  { q: "What is the token utility?", a: "It serves as a governance token for community initiatives and a digital collectible." }
+                ].map((faq, i) => (
+                  <div key={i} className="bg-white/5 rounded-xl p-6 border border-white/5">
+                    <h3 className="text-lg font-bold text-white mb-2">{faq.q}</h3>
+                    <p className="text-white/70 text-sm">{faq.a}</p>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#FEF3C7]">Symbol</span>
-                    <span className="text-white font-semibold">$HACHIKO</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#FEF3C7]">Decimals</span>
-                    <span className="text-white font-semibold">18</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#FEF3C7]">Network</span>
-                    <span className="text-white font-semibold">Ethereum</span>
-                  </div>
-                </div>
+                ))}
               </div>
-              
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-[rgba(245,158,11,0.3)]">
-                <h3 className="text-2xl font-semibold mb-6 text-[#F59E0B] flex items-center gap-2">
-                  <SparklesIcon className="w-6 h-6" />
-                  Features
-                </h3>
-                <ul className="space-y-3 text-[#DBEAFE]">
-                  <li className="flex items-start gap-3">
-                    <ShieldCheckIcon className="w-5 h-5 text-[#F59E0B] mt-1 flex-shrink-0" />
-                    <span>Loyalty rewards for long-term holders</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <HeartIcon className="w-5 h-5 text-[#F59E0B] mt-1 flex-shrink-0" />
-                    <span>Community-driven charitable initiatives</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <TrophyIcon className="w-5 h-5 text-[#F59E0B] mt-1 flex-shrink-0" />
-                    <span>NFT collection of historical moments</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <GlobeAltIcon className="w-5 h-5 text-[#F59E0B] mt-1 flex-shrink-0" />
-                    <span>Global awareness campaigns</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Chart and Chat Section */}
-            <div className="mt-8 h-[500px]">
-              <ChartChatView />
+              <footer className="mt-16 text-center text-white/30 text-sm pb-8">
+                © 2026 Hachiko Token | Preserving the Legacy
+              </footer>
             </div>
           </div>
         </section>
 
-        {/* Wisdom Section */}
-        <section className="min-w-full h-full flex-shrink-0 flex items-center justify-center px-4 overflow-y-auto snap-start">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#F59E0B]">Wisdom of Hachiko</h2>
-            <p className="text-xl text-center mb-12 text-[#DBEAFE] max-w-3xl">
-              Timeless lessons from Japan's most loyal companion
-            </p>
-
-            <LoyaltyFortuneGenerator />
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="min-w-full h-full flex-shrink-0 flex items-center justify-center px-4 overflow-y-auto snap-start">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-[rgba(212,175,55,0.3)]">
-              <h2 className="text-2xl font-bold text-[#F59E0B] mb-6 flex items-center gap-2">
-                <QuestionMarkCircleIcon className="w-6 h-6" />
-                Frequently Asked Questions
-              </h2>
-              <div className="space-y-6 text-left text-[#DBEAFE]">
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-[#F59E0B]">When did Hachiko die?</h3>
-                  <p>Hachiko passed away on March 8, 1935, at the age of 11 years. He was found on a street in Shibuya and taken to a veterinarian, where he died of cancer and was cremated.</p>
-                </div>
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-[#F59E0B]">Where is Hachiko buried?</h3>
-                  <p>Hachiko was cremated and his ashes were buried at Aoyama Cemetery in Tokyo. A bronze statue was later erected at Shibuya Station to honor his memory.</p>
-                </div>
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-[#F59E0B]">Why is Hachiko famous?</h3>
-                  <p>Hachiko became famous for his extraordinary loyalty and devotion, waiting at Shibuya Station for nearly 10 years after his owner's death, inspiring people worldwide with his unwavering loyalty.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
 
-      {/* Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-[#1a1a1a] py-3 px-4 text-center z-40 border-t border-[rgba(212,175,55,0.3)]">
-        <p className="text-[#C2B280] text-sm flex items-center justify-center gap-2">
-          Dedicated to the memory of Hachiko and the enduring power of loyalty
-          <HeartIcon className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]" />
-        </p>
-        <p className="text-[#C2B280] text-xs mt-1">
-          © 2026 Hachiko Token | Preserving the Legacy of Japan's Most Loyal Dog
-        </p>
-      </footer>
+      {/* Lightbox Modal */}
+      {lightboxIndex !== null && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl p-4" onClick={() => setLightboxIndex(null)}>
+          <button className="absolute top-6 right-6 text-white/70 hover:text-white p-2" onClick={() => setLightboxIndex(null)}>
+            <X className="w-8 h-8" />
+          </button>
+          <div className="relative w-full max-w-5xl max-h-[90vh] flex flex-col items-center">
+            <div className="relative w-full h-[80vh]">
+              <Image src={galleryImages[lightboxIndex].src} alt={galleryImages[lightboxIndex].alt} fill className="object-contain" />
+            </div>
+            <p className="text-white/90 mt-4 text-lg font-medium">{galleryImages[lightboxIndex].label}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Navigation Arrows (Optional, for desktop clarity) */}
+      <div className="hidden md:block fixed left-4 top-1/2 -translate-y-1/2 z-40 text-white/20 hover:text-[#D4AF37] cursor-pointer" onClick={() => scrollToSection(Math.max(0, activeSection - 1))}>
+        {activeSection > 0 && <ChevronLeft className="w-10 h-10" />}
+      </div>
+      <div className="hidden md:block fixed right-4 top-1/2 -translate-y-1/2 z-40 text-white/20 hover:text-[#D4AF37] cursor-pointer" onClick={() => scrollToSection(Math.min(sections.length - 1, activeSection + 1))}>
+        {activeSection < sections.length - 1 && <ChevronRight className="w-10 h-10" />}
+      </div>
     </div>
   );
 }

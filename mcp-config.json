@@ -1,1 +1,22 @@
-{"servers": {"canva-dev": {"type": "stdio", "command": "npx", "args": ["-y", "@canva/cli@latest", "mcp"]}}}
+{
+  "mcpServers": {
+    "canva-dev": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@canva/cli@latest",
+        "mcp"
+      ]
+    },
+    "supabase": {
+      "httpUrl": "https://mcp.supabase.com/mcp?project_ref=mqbeemmlhezcvkwhyrcq&features=functions%2Cbranching%2Cstorage%2Cdatabase%2Cdebugging%2Cdevelopment%2Cdocs%2Caccount"
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "next-devtools-mcp"
+      ]
+    }
+  }
+}
