@@ -117,6 +117,9 @@ npx prisma generate      # Regenerate Prisma client
 # Deployment
 vercel                   # Deploy to Vercel
 railway up               # Deploy to Railway
+
+# Self-hosting with custom domain
+cloudflared tunnel run   # Run Cloudflare Tunnel (see CUSTOM_DOMAIN.md)
 ```
 
 ---
@@ -139,3 +142,5 @@ railway up               # Deploy to Railway
 **Need help?**
 - [Rate Limiting Guide](./RATE_LIMITING.md)
 - [Non-Vercel Deployment](./DEPLOYMENT_NON_VERCEL.md)
+- [Self-Hosting Guide](./SELF_HOSTING.md)
+- [Custom Domain Setup](./CUSTOM_DOMAIN.md)
