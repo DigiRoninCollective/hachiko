@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import LoyaltyFortuneGenerator from "@/components/LoyaltyFortuneGenerator";
 import ChartChatView from "@/components/ChartChatView";
-import SolUsdcChart from "@/components/SolUsdcChart";
+import CustomSolChart from "@/components/CustomSolChart";
 
 export default function Home() {
   const [copiedAddress, setCopiedAddress] = useState(false);
@@ -174,12 +174,12 @@ export default function Home() {
       {/* Main Horizontal Scroll Container */}
       <div 
         ref={containerRef}
-        className="flex h-full w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth"
+        className="flex h-full w-full overflow-x-auto overflow-y-hidden scroll-smooth"
         style={{ scrollbarWidth: 'none' }} // Hide scrollbar for cleaner look
       >
         
         {/* SECTION 1: HERO */}
-        <section className="min-w-full h-full snap-start relative flex items-center justify-center pt-16">
+        <section className="min-w-full h-full relative flex items-center justify-center pt-16">
           {/* Internal overflow-y-auto allows content to scroll vertically if it exceeds screen height */}
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
             <div className="min-h-full max-w-6xl mx-auto">
@@ -274,7 +274,7 @@ export default function Home() {
         </section>
 
         {/* SECTION 2: DASHBOARD */}
-        <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
+        <section className="min-w-full h-full pt-16 bg-[#151515]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
             <div className="min-h-full max-w-6xl mx-auto">
               
@@ -283,7 +283,7 @@ export default function Home() {
                 
                 {/* Chart - Top Left */}
                 <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                  <SolUsdcChart />
+                  <CustomSolChart />
                 </div>
 
                 {/* Chat - Top Right */}
@@ -372,7 +372,7 @@ export default function Home() {
         </section>
 
         {/* SECTION 3: SYMBOLS */}
-        <section className="min-w-full h-full snap-start pt-16 bg-gradient-to-b from-[#151515] to-[#1a1a1a]">
+        <section className="min-w-full h-full pt-16 bg-gradient-to-b from-[#151515] to-[#1a1a1a]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
             <div className="min-h-full max-w-7xl mx-auto">
               <div className="text-center mb-16">
@@ -530,7 +530,7 @@ export default function Home() {
         </section>
 
         {/* SECTION 4: LORE */}
-        <section className="min-w-full h-full snap-start pt-16 bg-gradient-to-b from-[#151515] to-[#0f0f0f]">
+        <section className="min-w-full h-full pt-16 bg-gradient-to-b from-[#151515] to-[#0f0f0f]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
             <div className="min-h-full max-w-7xl mx-auto">
               {/* Hero Lore Header */}
@@ -669,7 +669,7 @@ export default function Home() {
         </section>
 
         {/* SECTION 5: WISDOM */}
-        <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
+        <section className="min-w-full h-full pt-16 bg-[#151515]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
             <div className="min-h-full flex flex-col items-center justify-center max-w-5xl mx-auto">
               <h2 className="text-4xl font-bold text-[#F59E0B] mb-6">Wisdom of Hachiko</h2>
@@ -682,7 +682,7 @@ export default function Home() {
         </section>
 
         {/* SECTION 6: FAQ */}
-        <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
+        <section className="min-w-full h-full pt-16 bg-[#151515]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
             <div className="min-h-full flex flex-col items-center justify-center max-w-3xl mx-auto">
               <h2 className="text-4xl font-bold text-[#F59E0B] mb-12">FAQ</h2>
