@@ -1,19 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { TrendingUp, Send, User, Bot, Crown } from 'lucide-react';
-
-// Solana wallet types
-declare global {
-  interface Window {
-    solana?: any;
-    phantom?: {
-      solana?: any;
-      isConnected?: boolean;
-      publicKey?: { toString(): string };
-      connect(): Promise<{ toString(): string }>;
-      disconnect(): Promise<void>;
-    };
-  }
-}
+import { Send, User, Bot } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -40,9 +26,6 @@ const ChartChatView = () => {
   const [error, setError] = useState<string | null>(null);
   const [usernameChangeCount, setUsernameChangeCount] = useState(0);
   const [lastUsernameChange, setLastUsernameChange] = useState(0);
-  const [walletConnected, setWalletConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
-  const [isTokenHolder, setIsTokenHolder] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [tokenStats, setTokenStats] = useState<TokenStats>({
     price: '$0.00000000',
@@ -84,10 +67,17 @@ const ChartChatView = () => {
     }
   }, [isInitialized]);
 
-  // Fetch messages when initialized
+  // Fetch messages when initialized and poll for updates
   useEffect(() => {
     if (isInitialized && userId) {
       fetchRecentMessages();
+      
+      // Poll for new messages every 3 seconds
+      const pollInterval = setInterval(() => {
+        fetchRecentMessages();
+      }, 3000);
+      
+      return () => clearInterval(pollInterval);
     }
   }, [isInitialized, userId]);
 
@@ -165,17 +155,9 @@ const ChartChatView = () => {
   const handleSendMessage = async () => {
     if (inputValue.trim() === '' || !username || !userId) return;
 
-    // Add user message optimistically
-    const userMessage: ChatMessage = {
-      id: `temp_${Date.now()}`,
-      userId,
-      username,
-      message: inputValue,
-      timestamp: new Date(),
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    const messageText = inputValue;
     setInputValue('');
+    setError(null);
 
     try {
       // Send message to API
@@ -187,7 +169,7 @@ const ChartChatView = () => {
         body: JSON.stringify({
           userId,
           username,
-          message: inputValue,
+          message: messageText,
         }),
       });
 
@@ -195,23 +177,25 @@ const ChartChatView = () => {
         const errorData = await response.json();
         console.error('Error sending message:', errorData.error);
 
-        // Remove the optimistic message if there was an error
-        setMessages(prev => prev.filter(msg => msg.id !== userMessage.id));
-
         // Handle rate limit specifically
         if (errorData.error?.includes('Rate limit exceeded')) {
           setError('Please wait a moment before sending another message.');
         } else {
           setError(`Error: ${errorData.error}`);
         }
+        
+        // Restore the input on error
+        setInputValue(messageText);
+      } else {
+        // Success - fetch messages to get the new one
+        await fetchRecentMessages();
       }
     } catch (error) {
       console.error('Network error sending message:', error);
-
-      // Remove the optimistic message if there was an error
-      setMessages(prev => prev.filter(msg => msg.id !== userMessage.id));
-
       setError('Network error. Please try again.');
+      
+      // Restore the input on error
+      setInputValue(messageText);
     }
   };
 
@@ -252,59 +236,6 @@ const ChartChatView = () => {
     setError(null);
   };
 
-  // Wallet connection functions
-  const connectWallet = async () => {
-    if (typeof window !== 'undefined' && window.phantom?.solana) {
-      try {
-        // Check if already connected
-        if (window.phantom.isConnected) {
-          const response = window.phantom.publicKey;
-          setWalletAddress(response.toString());
-          setWalletConnected(true);
-          await checkTokenHolder(response.toString());
-        } else {
-          // Request connection
-          const response = await window.phantom.solana.connect();
-          setWalletAddress(response.toString());
-          setWalletConnected(true);
-          await checkTokenHolder(response.toString());
-        }
-        
-        setError(null);
-      } catch (error) {
-        console.error('Wallet connection error:', error);
-        setError('Failed to connect wallet');
-      }
-    } else {
-      setError('Please install Phantom wallet');
-    }
-  };
-
-  const disconnectWallet = () => {
-    if (window.phantom?.solana) {
-      window.phantom.solana.disconnect();
-    }
-    setWalletConnected(false);
-    setWalletAddress('');
-    setIsTokenHolder(false);
-  };
-
-  const checkTokenHolder = async (address: string) => {
-    // This would be an API call to check if the address holds the token
-    // For now, we'll simulate it
-    try {
-      // In a real implementation, you'd call your API to check token balance
-      // const response = await fetch(`/api/check-token-holder?address=${address}`);
-      // const data = await response.json();
-      // setIsTokenHolder(data.holdsToken);
-      
-      // For demo purposes, let's randomly assign token holder status
-      setIsTokenHolder(Math.random() > 0.7); // 30% chance of being a token holder
-    } catch (error) {
-      console.error('Error checking token holder status:', error);
-    }
-  };
-
   return (
     <div className="flex flex-col h-full w-full">
       {/* Chat Section - Takes full space */}
@@ -318,31 +249,6 @@ const ChartChatView = () => {
               <h3 className="text-sm font-semibold text-[#D4AF37]">Hachiko Chat</h3>
             </div>
             <div className="flex items-center gap-3">
-              {/* Wallet Connection */}
-              {!walletConnected ? (
-                <button
-                  onClick={connectWallet}
-                  className="text-xs bg-[#D4AF37]/20 text-[#D4AF37] px-2 py-1 rounded hover:bg-[#D4AF37]/30 transition-all"
-                >
-                  Connect Wallet
-                </button>
-              ) : (
-                <div className="flex items-center gap-2">
-                  {isTokenHolder && (
-                    <div className="flex items-center gap-1">
-                      <Crown className="w-3 h-3 text-[#D4AF37]" />
-                      <span className="text-xs text-[#D4AF37]">Holder</span>
-                    </div>
-                  )}
-                  <button
-                    onClick={disconnectWallet}
-                    className="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded hover:bg-red-500/30 transition-all"
-                  >
-                    Disconnect
-                  </button>
-                </div>
-              )}
-              
               {/* Username Input */}
               <div className="flex items-center gap-2">
                 <span className="text-xs text-[#C2B280]">Username:</span>
@@ -353,17 +259,11 @@ const ChartChatView = () => {
                   className="bg-[#1a1a1a] border border-[rgba(212,175,55,0.3)] rounded px-2 py-1 text-white text-xs max-w-[80px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                   maxLength={20}
                 />
-                {isTokenHolder && (
-                  <Crown className="w-4 h-4 text-[#D4AF37]" />
-                )}
               </div>
             </div>
           </div>
           <p className="text-[#C2B280] text-xs mt-1">
-            {walletConnected 
-              ? (isTokenHolder ? "Token holder status verified ✨" : "Connected to wallet")
-              : "Ask about the chart, price, or token info"
-            }
+            Ask about the chart, price, or token info
           </p>
         </div>
 

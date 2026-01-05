@@ -11,6 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import LoyaltyFortuneGenerator from "@/components/LoyaltyFortuneGenerator";
 import ChartChatView from "@/components/ChartChatView";
+import SolUsdcChart from "@/components/SolUsdcChart";
 
 export default function Home() {
   const [copiedAddress, setCopiedAddress] = useState(false);
@@ -282,22 +283,7 @@ export default function Home() {
                 
                 {/* Chart - Top Left */}
                 <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-white">$HACHIKO Price Chart</h3>
-                    <div className="flex gap-1">
-                      {['1D', '1W', '1M'].map((period) => (
-                        <button key={period} className="px-3 py-1 text-xs rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all">
-                          {period}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="bg-black/30 rounded-xl h-96 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-4xl mb-2">📈</div>
-                      <div className="text-white/60">Chart loading...</div>
-                    </div>
-                  </div>
+                  <SolUsdcChart />
                 </div>
 
                 {/* Chat - Top Right */}
