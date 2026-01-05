@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 interface PriceData {
@@ -24,9 +24,9 @@ export default function SolUsdcChart() {
     }, 30000);
     
     return () => clearInterval(interval);
-  }, [timeframe, fetchSolUsdcData]);
+  }, [timeframe]);
 
-  const fetchSolUsdcData = useCallback(async () => {
+  const fetchSolUsdcData = async () => {
     try {
       setLoading(true);
       
@@ -118,7 +118,7 @@ export default function SolUsdcChart() {
     } finally {
       setLoading(false);
     }
-  }, [timeframe]);
+  };
 
   const isPositive = parseFloat(priceChange) >= 0;
 
