@@ -40,49 +40,85 @@ export default function SolUsdcChart() {
         if (pair) {
           setCurrentPrice(parseFloat(pair.priceUsd).toFixed(2));
           setPriceChange(pair.priceChange?.h24?.toFixed(2) || '0.00');
-          generateHistoricalData(parseFloat(pair.priceUsd));
+          
+          // Generate historical data inline
+          const mockPrice = parseFloat(pair.priceUsd);
+          const data: PriceData[] = [];
+          const now = Date.now();
+          let points = 24;
+          
+          if (timeframe === '1W') points = 7 * 24;
+          if (timeframe === '1M') points = 30 * 24;
+          
+          for (let i = points; i >= 0; i--) {
+            const timestamp = now - (i * 60 * 60 * 1000);
+            const volatility = 0.02;
+            const randomChange = (Math.random() - 0.5) * 2 * volatility;
+            const price = mockPrice * (1 + randomChange + (Math.sin(i / 10) * 0.01));
+            
+            data.push({
+              timestamp,
+              price: Math.max(price, mockPrice * 0.8)
+            });
+          }
+          
+          setPriceData(data);
         }
       } else {
         // Fallback to mock data
-        generateMockData();
+        const mockPrice = 234.56;
+        setCurrentPrice(mockPrice.toFixed(2));
+        setPriceChange('2.34');
+        
+        const data: PriceData[] = [];
+        const now = Date.now();
+        let points = 24;
+        
+        if (timeframe === '1W') points = 7 * 24;
+        if (timeframe === '1M') points = 30 * 24;
+        
+        for (let i = points; i >= 0; i--) {
+          const timestamp = now - (i * 60 * 60 * 1000);
+          const volatility = 0.02;
+          const randomChange = (Math.random() - 0.5) * 2 * volatility;
+          const price = mockPrice * (1 + randomChange + (Math.sin(i / 10) * 0.01));
+          
+          data.push({
+            timestamp,
+            price: Math.max(price, mockPrice * 0.8)
+          });
+        }
+        
+        setPriceData(data);
       }
     } catch (error) {
       console.error('Error fetching SOL data:', error);
-      generateMockData();
+      // Fallback to mock data
+      const mockPrice = 234.56;
+      setCurrentPrice(mockPrice.toFixed(2));
+      setPriceChange('2.34');
+      
+      const data: PriceData[] = [];
+      const now = Date.now();
+      let points = 24;
+      
+      for (let i = points; i >= 0; i--) {
+        const timestamp = now - (i * 60 * 60 * 1000);
+        const volatility = 0.02;
+        const randomChange = (Math.random() - 0.5) * 2 * volatility;
+        const price = mockPrice * (1 + randomChange + (Math.sin(i / 10) * 0.01));
+        
+        data.push({
+          timestamp,
+          price: Math.max(price, mockPrice * 0.8)
+        });
+      }
+      
+      setPriceData(data);
     } finally {
       setLoading(false);
     }
-  }, [generateHistoricalData, generateMockData]);
-
-  const generateHistoricalData = useCallback((basePrice: number) => {
-    const data: PriceData[] = [];
-    const now = Date.now();
-    let points = 24; // 24 hours for 1D
-    
-    if (timeframe === '1W') points = 7 * 24; // 7 days
-    if (timeframe === '1M') points = 30 * 24; // 30 days
-    
-    for (let i = points; i >= 0; i--) {
-      const timestamp = now - (i * 60 * 60 * 1000); // 1 hour intervals
-      const volatility = 0.02; // 2% volatility
-      const randomChange = (Math.random() - 0.5) * 2 * volatility;
-      const price = basePrice * (1 + randomChange + (Math.sin(i / 10) * 0.01));
-      
-      data.push({
-        timestamp,
-        price: Math.max(price, basePrice * 0.8) // Don't go below 80% of base price
-      });
-    }
-    
-    setPriceData(data);
   }, [timeframe]);
-
-  const generateMockData = useCallback(() => {
-    const mockPrice = 234.56;
-    setCurrentPrice(mockPrice.toFixed(2));
-    setPriceChange('2.34');
-    generateHistoricalData(mockPrice);
-  }, [generateHistoricalData]);
 
   const isPositive = parseFloat(priceChange) >= 0;
 
