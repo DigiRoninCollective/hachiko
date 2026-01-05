@@ -125,9 +125,9 @@
   --hachiko-dark-blue: #0F172A;
 }
 
-/* Smooth scrolling */
+/* Disable all scroll snapping and smooth scroll */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto !important;
   scroll-snap-type: none !important;
 }
 
@@ -135,6 +135,7 @@ html {
 * {
   scroll-snap-type: none !important;
   scroll-snap-align: none !important;
+  scroll-behavior: auto !important;
 }
 
 /* Card styling */

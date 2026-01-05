@@ -104,7 +104,7 @@ export default function Home() {
   }, [sections]);
 
   return (
-    <div className="relative min-h-screen bg-[#1a1a1a] text-white overflow-y-auto">
+    <div className="relative min-h-screen bg-[#1a1a1a] text-white">
       {/* Header/Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#1a1a1a]/95 backdrop-blur-md border-b border-[rgba(212,175,55,0.3)]">
         <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
