@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "npm install && next build",
+    "start": "npm install && next start",
     "lint": "next lint",
     "deploy": "netlify deploy --prod",
     "deploy:preview": "netlify deploy"
