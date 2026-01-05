@@ -128,6 +128,13 @@
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: none !important;
+}
+
+/* Disable scroll snap on all containers */
+* {
+  scroll-snap-type: none !important;
+  scroll-snap-align: none !important;
 }
 
 /* Card styling */

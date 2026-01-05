@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import LoyaltyFortuneGenerator from "@/components/LoyaltyFortuneGenerator";
 import ChartChatView from "@/components/ChartChatView";
-import CustomSolChart from "@/components/CustomSolChart";
+import CandlestickChart from "@/components/CandlestickChart";
 
 export default function Home() {
   const [copiedAddress, setCopiedAddress] = useState(false);
@@ -283,7 +283,7 @@ export default function Home() {
                 
                 {/* Chart - Top Left */}
                 <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                  <CustomSolChart />
+                  <CandlestickChart />
                 </div>
 
                 {/* Chat - Top Right */}
