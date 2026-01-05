@@ -31,13 +31,14 @@ export default function SolUsdcChart() {
       setLoading(true);
       
       // Fetch SOL/USDC pair data from DexScreener via our internal proxy
-      const response = await fetch('/api/token-data/pair?address=7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm&chain=solana');
+      // Using wrapped SOL for better price action display
+      const response = await fetch('/api/token-data/pair?address=So11111111111111111111111111111111111111112&chain=solana');
       
       if (response.ok) {
         const data = await response.json();
         const pair = data.pairs?.[0];
         
-        if (pair) {
+        if (pair && pair.priceUsd) {
           setCurrentPrice(parseFloat(pair.priceUsd).toFixed(2));
           setPriceChange(pair.priceChange?.h24?.toFixed(2) || '0.00');
           
@@ -63,61 +64,48 @@ export default function SolUsdcChart() {
           }
           
           setPriceData(data);
+        } else {
+          // API returned but no valid data, use mock
+          generateMockSolData();
         }
       } else {
-        // Fallback to mock data
-        const mockPrice = 234.56;
-        setCurrentPrice(mockPrice.toFixed(2));
-        setPriceChange('2.34');
-        
-        const data: PriceData[] = [];
-        const now = Date.now();
-        let points = 24;
-        
-        if (timeframe === '1W') points = 7 * 24;
-        if (timeframe === '1M') points = 30 * 24;
-        
-        for (let i = points; i >= 0; i--) {
-          const timestamp = now - (i * 60 * 60 * 1000);
-          const volatility = 0.02;
-          const randomChange = (Math.random() - 0.5) * 2 * volatility;
-          const price = mockPrice * (1 + randomChange + (Math.sin(i / 10) * 0.01));
-          
-          data.push({
-            timestamp,
-            price: Math.max(price, mockPrice * 0.8)
-          });
-        }
-        
-        setPriceData(data);
+        // API failed, use mock data
+        generateMockSolData();
       }
     } catch (error) {
       console.error('Error fetching SOL data:', error);
       // Fallback to mock data
-      const mockPrice = 234.56;
-      setCurrentPrice(mockPrice.toFixed(2));
-      setPriceChange('2.34');
-      
-      const data: PriceData[] = [];
-      const now = Date.now();
-      let points = 24;
-      
-      for (let i = points; i >= 0; i--) {
-        const timestamp = now - (i * 60 * 60 * 1000);
-        const volatility = 0.02;
-        const randomChange = (Math.random() - 0.5) * 2 * volatility;
-        const price = mockPrice * (1 + randomChange + (Math.sin(i / 10) * 0.01));
-        
-        data.push({
-          timestamp,
-          price: Math.max(price, mockPrice * 0.8)
-        });
-      }
-      
-      setPriceData(data);
+      generateMockSolData();
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateMockSolData = () => {
+    const mockPrice = 234.56;
+    setCurrentPrice(mockPrice.toFixed(2));
+    setPriceChange('2.34');
+    
+    const data: PriceData[] = [];
+    const now = Date.now();
+    let points = 24;
+    
+    if (timeframe === '1W') points = 7 * 24;
+    if (timeframe === '1M') points = 30 * 24;
+    
+    for (let i = points; i >= 0; i--) {
+      const timestamp = now - (i * 60 * 60 * 1000);
+      const volatility = 0.02;
+      const randomChange = (Math.random() - 0.5) * 2 * volatility;
+      const price = mockPrice * (1 + randomChange + (Math.sin(i / 10) * 0.01));
+      
+      data.push({
+        timestamp,
+        price: Math.max(price, mockPrice * 0.8)
+      });
+    }
+    
+    setPriceData(data);
   };
 
   const isPositive = parseFloat(priceChange) >= 0;
@@ -147,7 +135,7 @@ export default function SolUsdcChart() {
               {isPositive ? '+' : ''}{priceChange}%
             </div>
           </div>
-          <div className="text-sm text-white/60">SOL/USDC</div>
+          <div className="text-sm text-white/60">SOL/USD (Wrapped SOL)</div>
         </div>
         
         {/* Timeframe buttons */}
