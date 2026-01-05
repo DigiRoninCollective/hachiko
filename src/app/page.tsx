@@ -75,45 +75,42 @@ export default function Home() {
     }
   };
 
-  const scrollToSection = (index: number) => {
-    if (containerRef?.current) {
-      const container = containerRef.current;
-      const width = container.clientWidth;
-      container.scrollTo({
-        left: width * index,
-        behavior: 'smooth'
-      });
-      setActiveSection(index);
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
       setIsMobileMenuOpen(false);
     }
   };
 
   // Update active section on scroll
   useEffect(() => {
-    const container = containerRef?.current;
-    if (!container) return;
-
     const handleScroll = () => {
-      const scrollLeft = container.scrollLeft;
-      const width = container.clientWidth;
-      const index = Math.round(scrollLeft / width);
-      if (index !== activeSection) {
-        setActiveSection(index);
-      }
+      const scrollPosition = window.scrollY + 100;
+      sections.forEach((section, index) => {
+        const element = document.getElementById(section.id);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const offsetHeight = element.offsetHeight;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(index);
+          }
+        }
+      });
     };
 
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, [activeSection]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [sections]);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[#1a1a1a] text-white">
+    <div className="relative min-h-screen bg-[#1a1a1a] text-white overflow-y-auto">
       {/* Header/Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#1a1a1a]/95 backdrop-blur-md border-b border-[rgba(212,175,55,0.3)]">
         <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
           <div 
             className="flex items-center space-x-2 cursor-pointer"
-            onClick={() => scrollToSection(0)}
+            onClick={() => scrollToSection('hero')}
           >
             <svg className="w-7 h-7 text-[#D4AF37]" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C10.9 2 10 2.9 10 4C10 4.74 10.4 5.38 11 5.73V8C9 8 7.5 9.5 7.5 11.5C7.5 11.85 7.57 12.19 7.69 12.5L6.5 13.5C6.19 13.19 5.85 13 5.5 13C4.67 13 4 13.67 4 14.5C4 15.33 4.67 16 5.5 16C5.85 16 6.19 15.81 6.5 15.5L7.69 16.5C8.45 17.44 9.64 18 11 18H13C14.36 18 15.55 17.44 16.31 16.5L17.5 15.5C17.81 15.81 18.15 16 18.5 16C19.33 16 20 15.33 20 14.5C20 13.67 19.33 13 18.5 13C18.15 13 17.81 13.19 17.5 13.5L16.31 12.5C16.43 12.19 16.5 11.85 16.5 11.5C16.5 9.5 15 8 13 8V5.73C13.6 5.38 14 4.74 14 4C14 2.9 13.1 2 12 2M12 9C13.1 9 14 9.9 14 11C14 12.1 13.1 13 12 13C10.9 13 10 12.1 10 11C10 9.9 10.9 9 12 9M10 20C10 21.1 10.9 22 12 22C13.1 22 14 21.1 14 20H10Z" />
@@ -126,7 +123,7 @@ export default function Home() {
             {sections.map((section, idx) => (
               <button
                 key={section.id}
-                onClick={() => scrollToSection(idx)}
+                onClick={() => scrollToSection(section.id)}
                 className={`text-sm font-medium transition-colors ${
                   activeSection === idx ? "text-[#D4AF37]" : "text-white/70 hover:text-white"
                 }`}
@@ -158,7 +155,7 @@ export default function Home() {
               {sections.map((section, idx) => (
                 <button
                   key={section.id}
-                  onClick={() => scrollToSection(idx)}
+                  onClick={() => scrollToSection(section.id)}
                   className={`text-left py-2 px-3 rounded ${
                     activeSection === idx ? "bg-[#D4AF37]/10 text-[#D4AF37]" : "text-white/80"
                   }`}
@@ -171,17 +168,12 @@ export default function Home() {
         )}
       </nav>
 
-      {/* Main Horizontal Scroll Container */}
-      <div 
-        ref={containerRef}
-        className="flex h-full w-full overflow-x-auto overflow-y-hidden scroll-smooth"
-        style={{ scrollbarWidth: 'none' }} // Hide scrollbar for cleaner look
-      >
+      {/* Main Vertical Scroll Container */}
+      <main className="pt-16">
         
         {/* SECTION 1: HERO */}
-        <section className="min-w-full h-full relative flex items-center justify-center pt-16">
-          {/* Internal overflow-y-auto allows content to scroll vertically if it exceeds screen height */}
-          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+        <section id="hero" className="min-h-screen relative flex items-center justify-center">
+          <div className="w-full px-4 py-16">
             <div className="min-h-full max-w-6xl mx-auto">
               
               {/* Contract Address - Moved to top */}
@@ -255,7 +247,7 @@ export default function Home() {
                       </svg>
                       Buy $HACHIKO
                     </a>
-                    <button onClick={() => scrollToSection(3)} className="border-2 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-8 py-3 rounded-xl font-bold transition-all">
+                    <button onClick={() => scrollToSection('community')} className="border-2 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-8 py-3 rounded-xl font-bold transition-all">
                       Read the Story
                     </button>
                   </div>
@@ -274,8 +266,8 @@ export default function Home() {
         </section>
 
         {/* SECTION 2: DASHBOARD */}
-        <section className="min-w-full h-full pt-16 bg-[#151515]">
-          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+        <section id="token" className="min-h-screen py-16 bg-[#151515]">
+          <div className="w-full px-4">
             <div className="min-h-full max-w-6xl mx-auto">
               
               {/* 2x2 Grid Layout */}
@@ -372,8 +364,8 @@ export default function Home() {
         </section>
 
         {/* SECTION 3: SYMBOLS */}
-        <section className="min-w-full h-full pt-16 bg-gradient-to-b from-[#151515] to-[#1a1a1a]">
-          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
+        <section id="proof" className="py-16 bg-gradient-to-b from-[#151515] to-[#1a1a1a]">
+          <div className="w-full px-4">
             <div className="min-h-full max-w-7xl mx-auto">
               <div className="text-center mb-16">
                 <h2 className="text-5xl md:text-6xl font-bold text-[#D4AF37] mb-4">Symbols of Devotion</h2>
@@ -530,9 +522,9 @@ export default function Home() {
         </section>
 
         {/* SECTION 4: LORE */}
-        <section className="min-w-full h-full pt-16 bg-gradient-to-b from-[#151515] to-[#0f0f0f]">
-          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
-            <div className="min-h-full max-w-7xl mx-auto">
+        <section id="community" className="py-16 bg-gradient-to-b from-[#151515] to-[#0f0f0f]">
+          <div className="w-full px-4">
+            <div className="max-w-7xl mx-auto">
               {/* Hero Lore Header */}
               <div className="text-center mb-20">
                 <h2 className="text-6xl md:text-7xl font-bold text-[#D4AF37] mb-6">The Legend</h2>
@@ -669,9 +661,9 @@ export default function Home() {
         </section>
 
         {/* SECTION 5: WISDOM */}
-        <section className="min-w-full h-full pt-16 bg-[#151515]">
-          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
-            <div className="min-h-full flex flex-col items-center justify-center max-w-5xl mx-auto">
+        <section id="wisdom" className="py-16 bg-[#151515]">
+          <div className="w-full px-4">
+            <div className="flex flex-col items-center justify-center max-w-5xl mx-auto">
               <h2 className="text-4xl font-bold text-[#F59E0B] mb-6">Wisdom of Hachiko</h2>
               <p className="text-center text-white/60 mb-12 max-w-2xl">Generate daily wisdom cards inspired by loyalty and perseverance.</p>
               <div className="w-full">
@@ -682,9 +674,9 @@ export default function Home() {
         </section>
 
         {/* SECTION 6: FAQ */}
-        <section className="min-w-full h-full pt-16 bg-[#151515]">
-          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
-            <div className="min-h-full flex flex-col items-center justify-center max-w-3xl mx-auto">
+        <section id="faq" className="py-16 bg-[#151515]">
+          <div className="w-full px-4">
+            <div className="flex flex-col items-center justify-center max-w-3xl mx-auto">
               <h2 className="text-4xl font-bold text-[#F59E0B] mb-12">FAQ</h2>
               <div className="space-y-4 w-full">
                 {[
@@ -705,7 +697,7 @@ export default function Home() {
           </div>
         </section>
 
-      </div>
+      </main>
 
       {/* Lightbox Modal */}
       {lightboxIndex !== null && (
@@ -721,14 +713,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      {/* Navigation Arrows (Optional, for desktop clarity) */}
-      <div className="hidden md:block fixed left-4 top-1/2 -translate-y-1/2 z-40 text-white/20 hover:text-[#D4AF37] cursor-pointer" onClick={() => scrollToSection(Math.max(0, activeSection - 1))}>
-        {activeSection > 0 && <ChevronLeft className="w-10 h-10" />}
-      </div>
-      <div className="hidden md:block fixed right-4 top-1/2 -translate-y-1/2 z-40 text-white/20 hover:text-[#D4AF37] cursor-pointer" onClick={() => scrollToSection(Math.min(sections.length - 1, activeSection + 1))}>
-        {activeSection < sections.length - 1 && <ChevronRight className="w-10 h-10" />}
-      </div>
     </div>
   );
 }
