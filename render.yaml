@@ -1,4 +1,11 @@
 services:
+  # PostgreSQL Database
+  - type: pserv
+    name: hachiko-db
+    plan: free
+    databaseName: hachiko
+    user: hachiko
+
   # Web Service
   - type: web
     name: hachiko
@@ -12,6 +19,14 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hachiko-db
+          property: connectionString
+      - key: DIRECT_URL
+        fromDatabase:
+          name: hachiko-db
+          property: connectionString
     buildFilter:
       paths:
         - src/**
@@ -22,6 +37,7 @@ services:
         - tailwind.config.js
         - tsconfig.json
         - .env.example
+        - prisma/**
     autoDeploy: yes
     healthCheck:
       path: /

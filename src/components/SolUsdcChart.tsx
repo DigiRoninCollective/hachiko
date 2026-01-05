@@ -29,13 +29,14 @@ export default function SolUsdcChart() {
     try {
       setLoading(true);
       
-      // Fetch SOL/USDC pair data from DexScreener
+      // Fetch SOL/USDC pair data from DexScreener via our internal proxy
       // Using Raydium's SOL/USDC pair on Solana
-      const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/solana/7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm');
+      const response = await fetch('/api/token-data/pair?address=7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm&chain=solana');
       
       if (response.ok) {
         const data = await response.json();
-        const pair = data.pair;
+        // DexScreener returns { pairs: [...] }
+        const pair = data.pairs?.[0];
         
         if (pair) {
           setCurrentPrice(parseFloat(pair.priceUsd).toFixed(2));
