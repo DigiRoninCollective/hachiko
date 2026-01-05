@@ -12,6 +12,7 @@ import {
 import LoyaltyFortuneGenerator from "@/components/LoyaltyFortuneGenerator";
 import ChartChatView from "@/components/ChartChatView";
 import CandlestickChart from "@/components/CandlestickChart";
+import TwitterWidget from "@/components/TwitterWidget";
 
 export default function Home() {
   const [copiedAddress, setCopiedAddress] = useState(false);
@@ -314,47 +315,9 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Bottom Right - Additional Content or Spacer */}
+                {/* Bottom Right - Twitter Feed */}
                 <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                  <h3 className="text-lg font-bold text-white mb-4">Quick Links</h3>
-                  <div className="space-y-3">
-                    <a
-                      href="https://pump.fun"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all w-full"
-                    >
-                      <Image src="/icons/pumpfun.png" alt="Pump.fun" width={16} height={16} />
-                      Pump.fun
-                    </a>
-                    <a
-                      href="https://solscan.io"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all w-full"
-                    >
-                      <Image src="/icons/solscan.png" alt="Solscan" width={16} height={16} />
-                      Solscan
-                    </a>
-                    <a
-                      href="https://t.me/HachikoFunCom"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all w-full"
-                    >
-                      <Image src="/icons/telegram.svg" alt="Telegram" width={16} height={16} />
-                      Telegram
-                    </a>
-                    <a
-                      href="https://jupiter.ag"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl border border-[rgba(245,158,11,0.3)] bg-[#D4AF37]/20 py-3 text-sm font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/30 transition-all w-full"
-                    >
-                      <Image src="/icons/jupiter.png" alt="Jupiter" width={16} height={16} />
-                      Jupiter Swap
-                    </a>
-                  </div>
+                  <TwitterWidget username="HachikoInuNFT" height={280} />
                 </div>
 
               </div>
