@@ -1,11 +1,11 @@
 services:
   # Web Service
   - type: web
-    name: nomnom-hachiko
+    name: hachiko
     runtime: node
     plan: free
-    buildCommand: npm run build
-    startCommand: npm run start
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
@@ -21,9 +21,14 @@ services:
         - next.config.js
         - tailwind.config.js
         - tsconfig.json
-    domains:
-      - name: hachiko-token
-        domain: hachiko-token.onrender.com
+        - .env.example
+    autoDeploy: yes
+    healthCheck:
+      path: /
+      initialDelaySeconds: 30
+      intervalSeconds: 10
+      timeoutSeconds: 5
+      retries: 3
 
 # Environment Variables Documentation
 # ===================================
