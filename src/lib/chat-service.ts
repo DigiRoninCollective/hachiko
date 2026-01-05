@@ -8,6 +8,10 @@ export interface ChatMessage {
   message: string;
   timestamp: Date;
   ip?: string;
+  fileUrl?: string;
+  fileName?: string;
+  fileType?: string;
+  fileSize?: number;
 }
 
 export interface User {
@@ -49,6 +53,10 @@ export const saveMessage = async (message: Omit<ChatMessage, 'id' | 'timestamp'>
         username: message.username,
         message: message.message,
         ip: message.ip,
+        fileUrl: message.fileUrl,
+        fileName: message.fileName,
+        fileType: message.fileType,
+        fileSize: message.fileSize,
       },
     });
 
@@ -58,7 +66,11 @@ export const saveMessage = async (message: Omit<ChatMessage, 'id' | 'timestamp'>
       username: newMessage.username,
       message: newMessage.message,
       timestamp: newMessage.timestamp,
-      ip: newMessage.ip || undefined
+      ip: newMessage.ip || undefined,
+      fileUrl: newMessage.fileUrl || undefined,
+      fileName: newMessage.fileName || undefined,
+      fileType: newMessage.fileType || undefined,
+      fileSize: newMessage.fileSize || undefined,
     };
   } catch (error) {
     console.error('Error saving message to database:', error);
@@ -82,7 +94,11 @@ export const getRecentMessages = async (limit: number = 50): Promise<ChatMessage
       username: message.username,
       message: message.message,
       timestamp: message.timestamp,
-      ip: message.ip || undefined
+      ip: message.ip || undefined,
+      fileUrl: message.fileUrl || undefined,
+      fileName: message.fileName || undefined,
+      fileType: message.fileType || undefined,
+      fileSize: message.fileSize || undefined,
     })).reverse(); // Reverse to show oldest first (like a typical chat)
   } catch (error) {
     console.error('Error fetching messages from database:', error);

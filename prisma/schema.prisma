@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -10,13 +11,17 @@ datasource db {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Message {
-  id        String   @id @default(uuid())
-  userId    String
-  username  String
-  message   String   @db.VarChar(1000)
-  timestamp DateTime @default(now())
-  ip        String?
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(uuid())
+  userId       String
+  username     String
+  message      String   @db.VarChar(1000)
+  timestamp    DateTime @default(now())
+  ip           String?
+  fileUrl      String?
+  fileName     String?
+  fileType     String?
+  fileSize     Int?
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([timestamp(sort: Desc)])
   @@index([userId])

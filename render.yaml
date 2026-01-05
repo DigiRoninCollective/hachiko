@@ -1,0 +1,43 @@
+services:
+  # Web Service
+  - type: web
+    name: nomnom-hachiko
+    runtime: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    buildFilter:
+      paths:
+        - src/**
+        - public/**
+        - package.json
+        - package-lock.json
+        - next.config.js
+        - tailwind.config.js
+        - tsconfig.json
+    domains:
+      - name: hachiko-token
+        domain: hachiko-token.onrender.com
+
+# Environment Variables Documentation
+# ===================================
+# Required Environment Variables:
+# - NODE_ENV: production (automatically set by Render)
+# - PORT: 10000 (Render's default port)
+
+# Optional Environment Variables (for future features):
+# - DATABASE_URL: For production database
+# - REDIS_URL: For Redis caching
+# - SOLANA_RPC_URL: For Solana blockchain integration
+# - JWT_SECRET: For authentication
+# - WEBHOOK_SECRET: For GitHub webhooks
+
+# Development vs Production:
+# - Development: Uses in-memory store for rate limiting
+# - Production: Should use Redis for rate limiting (requires REDIS_URL)

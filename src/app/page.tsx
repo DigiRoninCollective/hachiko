@@ -1,22 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Script from "next/script";
 import { useState, useEffect, useRef } from "react";
-import { ExternalLink, Copy, Check, TrendingUp, X, ChevronRight, ChevronLeft } from "lucide-react";
+import { X, ChevronRight, ChevronLeft } from "lucide-react";
 import { 
-  BookOpenIcon, 
-  AcademicCapIcon, 
   HeartIcon, 
   ClockIcon,
-  ChartBarIcon,
-  CurrencyDollarIcon,
   SparklesIcon,
-  QuestionMarkCircleIcon,
-  ShieldCheckIcon,
-  GlobeAltIcon,
-  TrophyIcon,
-  CalendarIcon,
   MapPinIcon
 } from "@heroicons/react/24/outline";
 import LoyaltyFortuneGenerator from "@/components/LoyaltyFortuneGenerator";
@@ -72,7 +62,7 @@ export default function Home() {
     }
   ];
 
-  const contractAddress = "HACH1Ko11111111111111111111111111111111";
+  const contractAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
   const copyToClipboard = async () => {
     try {
@@ -85,7 +75,7 @@ export default function Home() {
   };
 
   const scrollToSection = (index: number) => {
-    if (containerRef.current) {
+    if (containerRef?.current) {
       const container = containerRef.current;
       const width = container.clientWidth;
       container.scrollTo({
@@ -99,7 +89,7 @@ export default function Home() {
 
   // Update active section on scroll
   useEffect(() => {
-    const container = containerRef.current;
+    const container = containerRef?.current;
     if (!container) return;
 
     const handleScroll = () => {
@@ -191,43 +181,90 @@ export default function Home() {
         <section className="min-w-full h-full snap-start relative flex items-center justify-center pt-16">
           {/* Internal overflow-y-auto allows content to scroll vertically if it exceeds screen height */}
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
-            <div className="min-h-full flex flex-col md:flex-row items-center justify-center max-w-7xl mx-auto gap-8 md:gap-16">
+            <div className="min-h-full max-w-6xl mx-auto">
               
-              <div className="flex-1 text-center md:text-left space-y-6">
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-white via-[#fff8e1] to-[#D4AF37] bg-clip-text text-transparent">
-                  Hachiko
-                </h1>
-                <p className="text-xl md:text-2xl text-white/90 max-w-xl mx-auto md:mx-0">
-                  Japan's Most Loyal Dog — A Story of Unwavering Devotion Reborn on Solana.
-                </p>
-                <div className="flex flex-wrap justify-center md:justify-start gap-8">
-                  <div>
-                    <div className="text-3xl font-bold text-[#D4AF37]">10+</div>
-                    <div className="text-xs text-[#C2B280] uppercase">Years Waiting</div>
+              {/* Contract Address - Moved to top */}
+              <div className="w-full max-w-2xl mx-auto mb-8">
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-[rgba(245,158,11,0.3)]">
+                  <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2 justify-center">
+                    <svg width="16" height="16" viewBox="0 0 643 643" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="643" height="643" fill="black"/>
+                      <path d="M447.21 246.604C445.092 248.75 442.22 249.955 439.225 249.955H156.315C146.316 249.955 141.25 237.761 148.241 230.519L194.646 182.442C196.771 180.241 199.681 179 202.72 179H486.685C496.745 179 501.784 191.321 494.67 198.527L447.21 246.604Z" fill="url(#gradient1)"/>
+                      <path d="M447.21 461.326C445.092 463.418 442.22 464.593 439.225 464.593H156.315C146.316 464.593 141.25 452.704 148.241 445.643L194.646 398.768C196.771 396.622 199.681 395.412 202.72 395.412H486.685C496.745 395.412 501.784 407.425 494.67 414.451L447.21 461.326Z" fill="url(#gradient2)"/>
+                      <path d="M447.21 290.473C445.092 288.381 442.22 287.206 439.225 287.206L156.315 287.206C146.316 287.206 141.25 299.095 148.241 306.156L194.646 353.031C196.771 355.177 199.681 356.387 202.72 356.387L486.685 356.387C496.745 356.387 501.784 344.374 494.67 337.348L447.21 290.473Z" fill="url(#gradient3)"/>
+                      <defs>
+                        <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#00D4FF"/>
+                          <stop offset="100%" stopColor="#14F195"/>
+                        </linearGradient>
+                        <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#14F195"/>
+                          <stop offset="100%" stopColor="#00D4FF"/>
+                        </linearGradient>
+                        <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#00D4FF"/>
+                          <stop offset="50%" stopColor="#14F195"/>
+                          <stop offset="100%" stopColor="#00D4FF"/>
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    Contract Address
+                  </h3>
+                  <div className="relative">
+                    <input type="text" value={contractAddress} readOnly className="w-full bg-black/30 border border-[rgba(245,158,11,0.3)] rounded-lg px-4 py-3 font-mono text-sm text-gray-300 focus:outline-none text-center" />
+                    <button onClick={copyToClipboard} className="absolute right-2 top-2 bottom-2 bg-[#D4AF37] text-black px-3 rounded text-xs font-bold hover:bg-[#D4AF37]/90">
+                      {copiedAddress ? "Copied!" : "Copy"}
+                    </button>
                   </div>
-                  <div>
-                    <div className="text-3xl font-bold text-[#D4AF37]">1935</div>
-                    <div className="text-xs text-[#C2B280] uppercase">Legacy Year</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold text-[#D4AF37]">∞</div>
-                    <div className="text-xs text-[#C2B280] uppercase">Loyalty</div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
-                  <a href="https://pump.fun" target="_blank" className="bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black px-8 py-3 rounded-xl font-bold shadow-lg transition-transform hover:-translate-y-1">
-                    Buy on pump.fun
-                  </a>
-                  <button onClick={() => scrollToSection(3)} className="border-2 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-8 py-3 rounded-xl font-bold transition-all">
-                    Read the Story
-                  </button>
                 </div>
               </div>
 
-              <div className="flex-1 flex justify-center">
-                <div className="relative w-[300px] md:w-[450px] aspect-square">
-                  <div className="absolute inset-0 bg-[#D4AF37] blur-[80px] opacity-20 rounded-full"></div>
-                  <Image src="/images/hachiko/hachiko-family.webp" alt="Hachiko" fill className="object-contain drop-shadow-2xl relative z-10" priority />
+              {/* Hero Content - Left Title, Right Image */}
+              <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+                <div className="flex-1 text-center md:text-left space-y-6">
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#D4AF37]">
+                    Hachiko
+                  </h1>
+                  <p className="text-xl md:text-2xl text-white/90 max-w-xl">
+                    Japan&apos;s Most Loyal Dog — A Story of Unwavering Devotion Reborn on Solana.
+                  </p>
+                  <div className="flex flex-wrap justify-center md:justify-start gap-8">
+                    <div>
+                      <div className="text-3xl font-bold text-[#D4AF37]">10+</div>
+                      <div className="text-xs text-[#C2B280] uppercase">Years Waiting</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-[#D4AF37]">1935</div>
+                      <div className="text-xs text-[#C2B280] uppercase">Legacy Year</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-[#D4AF37]">∞</div>
+                      <div className="text-xs text-[#C2B280] uppercase">Loyalty</div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
+                    <a
+                      href="https://jup.ag/swap/SOL-EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full md:w-auto bg-gradient-to-r from-[#D4AF37] to-[#C2B280] hover:from-[#D4AF37]/90 hover:to-[#C2B280]/90 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition-all hover:-translate-y-1 flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                      </svg>
+                      Buy $HACHIKO
+                    </a>
+                    <button onClick={() => scrollToSection(3)} className="border-2 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-8 py-3 rounded-xl font-bold transition-all">
+                      Read the Story
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex-1 flex justify-center">
+                  <div className="relative w-[300px] md:w-[450px] aspect-square">
+                    <div className="absolute inset-0 bg-[#D4AF37] blur-[80px] opacity-20 rounded-full"></div>
+                    <Image src="/images/hachiko/hachiko-family.webp" alt="Hachiko" fill className="object-contain drop-shadow-2xl relative z-10" priority />
+                  </div>
                 </div>
               </div>
 
@@ -235,185 +272,417 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SECTION 2: TOKEN */}
+        {/* SECTION 2: DASHBOARD */}
         <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
-            <div className="min-h-full flex flex-col items-center justify-center max-w-7xl mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-4xl md:text-5xl font-bold text-[#F59E0B]">Hachiko Token</h2>
-                <p className="text-[#DBEAFE] mt-2">Built on Solana. Designed for loyalty.</p>
-              </div>
-
-              <div className="grid lg:grid-cols-2 gap-8 w-full">
-                <div className="space-y-6">
-                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                      <Image src="/solana.svg" alt="SOL" width={24} height={24} /> Contract Address
-                    </h3>
-                    <div className="relative">
-                      <input type="text" value={contractAddress} readOnly className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 font-mono text-sm text-gray-300 focus:outline-none" />
-                      <button onClick={copyToClipboard} className="absolute right-2 top-2 bottom-2 bg-[#D4AF37] text-black px-3 rounded text-xs font-bold hover:bg-[#D4AF37]/90">
-                        {copiedAddress ? "Copied!" : "Copy"}
-                      </button>
+            <div className="min-h-full max-w-6xl mx-auto">
+              
+              {/* 2x2 Grid Layout */}
+              <div className="grid lg:grid-cols-2 gap-6 h-full">
+                
+                {/* Chart - Top Left */}
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-white">$HACHIKO Price Chart</h3>
+                    <div className="flex gap-1">
+                      {['1D', '1W', '1M'].map((period) => (
+                        <button key={period} className="px-3 py-1 text-xs rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all">
+                          {period}
+                        </button>
+                      ))}
                     </div>
                   </div>
+                  <div className="bg-black/30 rounded-xl h-96 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-4xl mb-2">📈</div>
+                      <div className="text-white/60">Chart loading...</div>
+                    </div>
+                  </div>
+                </div>
 
-                  <div className="grid grid-cols-3 gap-3">
+                {/* Chat - Top Right */}
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden">
+                  <div className="p-4 border-b border-white/10">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">💬</span>
+                      <h3 className="text-lg font-bold text-[#D4AF37]">Community Chat</h3>
+                    </div>
+                  </div>
+                  <div className="h-96">
+                    <ChartChatView />
+                  </div>
+                </div>
+
+                {/* Bottom Left - Additional Content or Spacer */}
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-4">Token Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-black/30 rounded-lg p-4">
+                      <div className="text-[#D4AF37] font-bold text-lg">0</div>
+                      <div className="text-xs text-white/60">Holders</div>
+                    </div>
+                    <div className="bg-black/30 rounded-lg p-4">
+                      <div className="text-[#D4AF37] font-bold text-lg">1B</div>
+                      <div className="text-xs text-white/60">Total Supply</div>
+                    </div>
+                    <div className="bg-black/30 rounded-lg p-4">
+                      <div className="text-[#D4AF37] font-bold text-lg">$0</div>
+                      <div className="text-xs text-white/60">Market Cap</div>
+                    </div>
+                    <div className="bg-black/30 rounded-lg p-4">
+                      <div className="text-[#D4AF37] font-bold text-lg">0%</div>
+                      <div className="text-xs text-white/60">24h Change</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Right - Additional Content or Spacer */}
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-4">Quick Links</h3>
+                  <div className="space-y-3">
                     <a
                       href="https://pump.fun"
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all w-full"
                     >
-                      <Image src="/icons/pumpfun.png" alt="Pump.fun" width={18} height={18} />
+                      <Image src="/icons/pumpfun.png" alt="Pump.fun" width={16} height={16} />
                       Pump.fun
                     </a>
                     <a
                       href="https://solscan.io"
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all w-full"
                     >
-                      <Image src="/icons/solscan.png" alt="Solscan" width={18} height={18} />
+                      <Image src="/icons/solscan.png" alt="Solscan" width={16} height={16} />
                       Solscan
                     </a>
                     <a
                       href="https://t.me/HachikoFunCom"
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all w-full"
                     >
-                      <Image src="/icons/telegram.svg" alt="Telegram" width={18} height={18} />
+                      <Image src="/icons/telegram.svg" alt="Telegram" width={16} height={16} />
                       Telegram
                     </a>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <div className="text-sm font-semibold text-[#D4AF37] mb-3">Community</div>
-                    <div className="min-h-[220px]">
-                      <Script
-                        src="https://telegram.org/js/telegram-widget.js?22"
-                        strategy="lazyOnload"
-                        data-telegram-post="HachikoFunCom/2"
-                        data-width="100%"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                      <div className="text-[#D4AF37] font-bold text-lg">1B Supply</div>
-                      <div className="text-xs text-white/60">Total Token Supply</div>
-                    </div>
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                      <div className="text-[#D4AF37] font-bold text-lg">0% Tax</div>
-                      <div className="text-xs text-white/60">Buy/Sell Tax</div>
-                    </div>
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                      <div className="text-[#D4AF37] font-bold text-lg">Mint Revoked</div>
-                      <div className="text-xs text-white/60">Fixed Supply</div>
-                    </div>
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                      <div className="text-[#D4AF37] font-bold text-lg">Liquidity</div>
-                      <div className="text-xs text-white/60">Burned on Raydium</div>
-                    </div>
+                    <a
+                      href="https://jupiter.ag"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-[rgba(245,158,11,0.3)] bg-[#D4AF37]/20 py-3 text-sm font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/30 transition-all w-full"
+                    >
+                      <Image src="/icons/jupiter.png" alt="Jupiter" width={16} height={16} />
+                      Jupiter Swap
+                    </a>
                   </div>
                 </div>
 
-                <div className="bg-white/5 rounded-2xl p-1 border border-white/10 overflow-hidden min-h-[300px]">
-                  <ChartChatView />
-                </div>
               </div>
+
             </div>
           </div>
         </section>
 
         {/* SECTION 3: SYMBOLS */}
-        <section className="min-w-full h-full snap-start pt-16">
+        <section className="min-w-full h-full snap-start pt-16 bg-gradient-to-b from-[#151515] to-[#1a1a1a]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
-            <div className="min-h-full flex flex-col items-center justify-center max-w-7xl mx-auto">
-              <h2 className="text-4xl font-bold text-[#F59E0B] mb-12 text-center">Symbols of Devotion</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+            <div className="min-h-full max-w-7xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-5xl md:text-6xl font-bold text-[#D4AF37] mb-4">Symbols of Devotion</h2>
+                <p className="text-xl text-white/80">The enduring legacy of Hachiko's unwavering loyalty</p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
                 {[
-                  { icon: ClockIcon, title: "9 Years", desc: "The duration of his daily vigil at Shibuya." },
-                  { icon: MapPinIcon, title: "Shibuya", desc: "The station where the legend was born." },
-                  { icon: HeartIcon, title: "Loyalty", desc: "The virtue that defines our community." },
-                  { icon: SparklesIcon, title: "Statue", desc: "The bronze monument honoring his spirit." }
+                  { 
+                    icon: ClockIcon, 
+                    title: "9 Years", 
+                    desc: "The duration of his daily vigil at Shibuya Station.",
+                    bg: "from-[#D4AF37]/10 to-[#C2B280]/10",
+                    borderColor: "border-[#D4AF37]/30",
+                    iconColor: "text-[#D4AF37]"
+                  },
+                  { 
+                    icon: MapPinIcon, 
+                    title: "Shibuya", 
+                    desc: "The legendary Tokyo station where history was made.",
+                    bg: "from-[#F59E0B]/10 to-[#D4AF37]/10", 
+                    borderColor: "border-[#F59E0B]/30",
+                    iconColor: "text-[#F59E0B]"
+                  },
+                  { 
+                    icon: HeartIcon, 
+                    title: "Loyalty", 
+                    desc: "The virtue that defines our community and mission.",
+                    bg: "from-[#C2B280]/10 to-[#D4AF37]/10",
+                    borderColor: "border-[#C2B280]/30", 
+                    iconColor: "text-[#C2B280]"
+                  },
+                  { 
+                    icon: SparklesIcon, 
+                    title: "Legacy", 
+                    desc: "The bronze monument that immortalizes his spirit.",
+                    bg: "from-[#D4AF37]/10 to-[#F59E0B]/10",
+                    borderColor: "border-[#D4AF37]/30",
+                    iconColor: "text-[#D4AF37]"
+                  }
                 ].map((item, i) => (
-                  <div key={i} className="bg-white/5 p-8 rounded-3xl border border-[#D4AF37]/20 hover:-translate-y-2 transition-all duration-300">
-                    <div className="w-12 h-12 bg-[#D4AF37]/20 rounded-full flex items-center justify-center mb-6">
-                      <item.icon className="w-6 h-6 text-[#D4AF37]" />
+                  <div 
+                    key={i} 
+                    className={`group relative bg-gradient-to-br ${item.bg} p-8 rounded-3xl border ${item.borderColor} hover:scale-105 transition-all duration-500 cursor-pointer overflow-hidden`}
+                  >
+                    {/* Animated background effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div className="relative z-10">
+                      <div className={`w-16 h-16 bg-gradient-to-br ${item.bg} rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border ${item.borderColor}`}>
+                        <item.icon className={`w-8 h-8 ${item.iconColor}`} />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-[#D4AF37] transition-colors duration-300">{item.title}</h3>
+                      <p className="text-white text-base leading-relaxed font-medium">{item.desc}</p>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
-                    <p className="text-white/60 text-sm">{item.desc}</p>
+                    
+                    {/* Hover glow effect */}
+                    <div className={`absolute -inset-1 bg-gradient-to-r ${item.bg} opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500`}></div>
                   </div>
                 ))}
+              </div>
+
+              {/* Who Was Hachiko Section */}
+              <div className="mb-20">
+                <h3 className="text-3xl font-bold text-[#D4AF37] mb-8 text-center">Who Was Hachiko?</h3>
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-6">
+                    <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#C2B280]/10 p-6 rounded-2xl border border-[#D4AF37]/30">
+                      <h4 className="text-xl font-bold text-[#D4AF37] mb-3">The Beginning</h4>
+                      <p className="text-white leading-relaxed">
+                        Born in 1923 in Odate, Akita Prefecture, Hachiko was a golden Akita puppy adopted by Professor Hidesaburo Ueno, a distinguished professor at the University of Tokyo. Their bond began in 1924 when Hachiko was just 2 months old.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-[#F59E0B]/10 to-[#D4AF37]/10 p-6 rounded-2xl border border-[#F59E0B]/30">
+                      <h4 className="text-xl font-bold text-[#F59E0B] mb-3">The Daily Ritual</h4>
+                      <p className="text-white leading-relaxed">
+                        Every morning, Hachiko would accompany Professor Ueno to Shibuya Station and return each evening at 3 PM to greet him when his train arrived. This daily routine continued for over a year, creating an unbreakable bond between them.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-[#C2B280]/10 to-[#D4AF37]/10 p-6 rounded-2xl border border-[#C2B280]/30">
+                      <h4 className="text-xl font-bold text-[#C2B280] mb-3">The Tragedy</h4>
+                      <p className="text-white leading-relaxed">
+                        On May 21, 1925, Professor Ueno suffered a cerebral hemorrhage and died suddenly at work, never to return to Shibuya Station. But Hachiko, not understanding death, continued his daily vigil, waiting for his beloved owner to return.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#F59E0B]/10 p-6 rounded-2xl border border-[#D4AF37]/30">
+                      <h4 className="text-xl font-bold text-[#D4AF37] mb-3">The Vigil</h4>
+                      <p className="text-white leading-relaxed">
+                        For nearly 10 years, Hachiko returned to Shibuya Station every single day, waiting patiently from morning until evening. Through harsh winters, scorching summers, rain and snow, he never missed a day - 3,650+ days of unwavering devotion.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-[#F59E0B]/10 to-[#C2B280]/10 p-6 rounded-2xl border border-[#F59E0B]/30">
+                      <h4 className="text-xl font-bold text-[#F59E0B] mb-3">Community Response</h4>
+                      <p className="text-white leading-relaxed">
+                        Station workers and local vendors cared for Hachiko, providing food and shelter. News of his loyalty spread throughout Japan, drawing visitors from across the country to witness this faithful dog's extraordinary devotion.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-[#C2B280]/10 to-[#D4AF37]/10 p-6 rounded-2xl border border-[#C2B280]/30">
+                      <h4 className="text-xl font-bold text-[#C2B280] mb-3">The Legacy</h4>
+                      <p className="text-white leading-relaxed">
+                        Hachiko passed away on March 8, 1935, but his story became immortal. A bronze statue was unveiled at Shibuya Station in 1934, and today he remains Japan's most beloved symbol of loyalty, teaching millions about the power of unconditional love.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Gallery Section */}
+              <div className="mb-16">
+                <h3 className="text-3xl font-bold text-[#D4AF37] mb-8 text-center">Gallery of Memories</h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {galleryImages.map((image, index) => (
+                    <div
+                      key={index}
+                      className="group relative overflow-hidden rounded-2xl cursor-pointer"
+                      onClick={() => setLightboxIndex(index)}
+                    >
+                      <div className="aspect-square relative">
+                        <Image
+                          src={image.src}
+                          alt={image.alt}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="absolute bottom-0 left-0 right-0 p-4">
+                            <p className="text-white font-semibold text-sm">{image.label}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Interactive quote section */}
+              <div className="text-center">
+                <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#C2B280]/10 rounded-3xl p-8 border border-[#D4AF37]/20">
+                  <blockquote className="text-2xl text-white/90 italic mb-4">
+                    "Loyalty is not just a virtue, it's the very essence of what makes us human."
+                  </blockquote>
+                  <cite className="text-[#D4AF37] font-semibold">— The Spirit of Hachiko</cite>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* SECTION 4: LORE */}
-        <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
+        <section className="min-w-full h-full snap-start pt-16 bg-gradient-to-b from-[#151515] to-[#0f0f0f]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
-            <div className="min-h-full flex flex-col items-center justify-center max-w-6xl mx-auto">
-              <h2 className="text-4xl font-bold text-[#F59E0B] mb-12">The Lore</h2>
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <div className="space-y-8">
-                  <div>
-                    <h3 className="text-2xl font-semibold text-[#FEF3C7] mb-2">The Beginning</h3>
-                    <p className="text-white/80 leading-relaxed">Born in 1923, Hachiko formed an unbreakable bond with Professor Ueno. Every day, they walked to the station together, and every evening, Hachiko was there to welcome him home.</p>
+            <div className="min-h-full max-w-7xl mx-auto">
+              {/* Hero Lore Header */}
+              <div className="text-center mb-20">
+                <h2 className="text-6xl md:text-7xl font-bold text-[#D4AF37] mb-6">The Legend</h2>
+                <p className="text-2xl text-white/90 max-w-3xl mx-auto">A tale of unwavering devotion that touched the hearts of millions</p>
+              </div>
+
+              {/* Story Cards - Hachiko's Loyalty */}
+              <div className="grid md:grid-cols-3 gap-8 mb-20">
+                {[
+                  {
+                    title: "The Daily Promise",
+                    desc: "Every morning at dawn, Hachiko would walk to Shibuya Station, waiting patiently until the evening trains arrived. For 3,650+ days, he never missed his vigil, demonstrating a loyalty that transcended human understanding.",
+                    quote: "He waited for a master who would never return.",
+                    stat: "10 years"
+                  },
+                  {
+                    title: "Through Storm and Shine", 
+                    desc: "Through harsh winters, scorching summers, rain and snow, Hachiko remained faithful. Station workers and local vendors cared for him, but his focus never wavered from the spot where he last saw his beloved owner.",
+                    quote: "Weather could not break his spirit.",
+                    stat: "Every season"
+                  },
+                  {
+                    title: "A Nation's Heart",
+                    desc: "News of Hachiko's unwavering loyalty spread throughout Japan. People traveled from far and wide to witness this faithful dog. His story became a symbol of pure devotion, teaching millions about the power of unconditional love.",
+                    quote: "His loyalty became Japan's treasure.",
+                    stat: "Millions inspired"
+                  }
+                ].map((item, i) => (
+                  <div key={i} className="group relative">
+                    <div className="bg-gradient-to-br from-[#D4AF37]/5 to-[#C2B280]/5 p-8 rounded-2xl border border-[#D4AF37]/20 hover:scale-105 transition-all duration-500">
+                      <h4 className="text-2xl font-bold text-[#D4AF37] mb-4">{item.title}</h4>
+                      <p className="text-white text-base leading-relaxed mb-6">{item.desc}</p>
+                      <div className="bg-black/30 rounded-lg p-4 mb-4">
+                        <p className="text-[#D4AF37] italic text-center">"{item.quote}"</p>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-[#D4AF37]">{item.stat}</div>
+                        <div className="text-white/60 text-sm">Duration</div>
+                      </div>
+                    </div>
+                    {/* Glow effect */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-[#D4AF37]/20 to-[#C2B280]/20 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500 rounded-2xl"></div>
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-semibold text-[#FEF3C7] mb-2">The Vigil</h3>
-                    <p className="text-white/80 leading-relaxed">After the Professor's sudden death in 1925, Hachiko continued to return to Shibuya Station every single day for nearly 10 years, waiting for a reunion that would never come in this life.</p>
-                  </div>
-                </div>
-                <div className="bg-white/5 rounded-3xl p-8 border border-white/10">
-                  <div className="space-y-6 border-l-2 border-[#D4AF37]/30 ml-2 pl-8 relative">
+                ))}
+              </div>
+
+              {/* Interactive Timeline */}
+              <div className="mb-20">
+                <h3 className="text-3xl font-bold text-[#D4AF37] mb-12 text-center">Journey Through Time</h3>
+                <div className="relative">
+                  {/* Timeline Line */}
+                  <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-[#D4AF37] to-[#C2B280] opacity-30"></div>
+                  
+                  <div className="space-y-16">
                     {[
-                      { year: "1923", text: "Born in Odate, Akita Prefecture." },
-                      { year: "1925", text: "Professor Ueno passes away. The vigil begins." },
-                      { year: "1934", text: "Bronze statue unveiled at Shibuya." },
-                      { year: "1935", text: "Hachiko passes away, becoming a legend." }
+                      {
+                        year: "1923",
+                        title: "The Beginning",
+                        desc: "A golden Akita puppy is born in Odate, Akita Prefecture, destined for greatness.",
+                        side: "left"
+                      },
+                      {
+                        year: "1924", 
+                        title: "A New Family",
+                        desc: "Professor Hidesaburo Ueno adopts Hachiko, beginning their extraordinary bond.",
+                        side: "right"
+                      },
+                      {
+                        year: "1925",
+                        title: "The Promise Broken", 
+                        desc: "Professor Ueno suddenly passes away, but Hachiko's vigil begins.",
+                        side: "left"
+                      },
+                      {
+                        year: "1934",
+                        title: "Memorial Born",
+                        desc: "A bronze statue is unveiled at Shibuya Station, honoring Hachiko's loyalty.",
+                        side: "right"
+                      },
+                      {
+                        year: "1935",
+                        title: "Legacy Immortalized",
+                        desc: "Hachiko passes away, but his spirit lives on in the hearts of millions.",
+                        side: "left"
+                      }
                     ].map((item, i) => (
-                      <div key={i} className="relative">
-                        <div className="absolute -left-[41px] top-1 w-5 h-5 rounded-full bg-[#D4AF37] border-4 border-[#1a1a1a]"></div>
-                        <div className="text-[#D4AF37] font-bold">{item.year}</div>
-                        <div className="text-white/70 text-sm">{item.text}</div>
+                      <div key={i} className={`relative flex items-center ${item.side === 'left' ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                        {/* Timeline Dot */}
+                        <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full bg-[#D4AF37] border-4 border-[#0f0f0f] z-10">
+                          <div className="absolute inset-1 rounded-full bg-[#D4AF37] animate-pulse"></div>
+                        </div>
+                        
+                        {/* Content Card */}
+                        <div className={`w-full md:w-5/12 ${item.side === 'left' ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}>
+                          <div className="group bg-gradient-to-br from-[#D4AF37]/10 to-[#C2B280]/10 p-8 rounded-2xl border border-[#D4AF37]/30 hover:scale-105 transition-all duration-500 cursor-pointer">
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="w-8 h-8 bg-gradient-to-br from-[#D4AF37]/20 to-[#C2B280]/20 rounded-full flex items-center justify-center">
+                                <div className="w-4 h-4 bg-[#D4AF37] rounded-full"></div>
+                              </div>
+                              <div>
+                                <div className="text-2xl font-bold text-[#D4AF37]">{item.year}</div>
+                                <div className="text-xl font-semibold text-white">{item.title}</div>
+                              </div>
+                            </div>
+                            <p className="text-white text-base leading-relaxed">{item.desc}</p>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* SECTION 5: GALLERY */}
-        <section className="min-w-full h-full snap-start pt-16">
-          <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
-            <div className="min-h-full flex flex-col items-center justify-center max-w-7xl mx-auto">
-              <h2 className="text-4xl font-bold text-[#F59E0B] mb-8">Historical Archives</h2>
-              <div className="grid md:grid-cols-3 gap-4 w-full">
-                {galleryImages.map((img, idx) => (
-                  <div 
-                    key={idx} 
-                    className={`relative group rounded-xl overflow-hidden cursor-pointer border border-white/10 aspect-[4/3] ${idx === 0 ? 'md:col-span-2 md:row-span-2 md:aspect-auto' : ''}`}
-                    onClick={() => setLightboxIndex(idx)}
-                  >
-                    <Image src={img.src} alt={img.alt} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                      <p className="text-white font-medium text-sm">{img.label}</p>
-                    </div>
+              {/* Call to Action */}
+              <div className="text-center">
+                <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#C2B280]/10 rounded-3xl p-12 border border-[#D4AF37]/20">
+                  <h3 className="text-3xl font-bold text-[#D4AF37] mb-4">Carry the Legacy Forward</h3>
+                  <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+                    Hachiko's story teaches us that true loyalty transcends time and circumstance. 
+                    Join us in building a community that honors this eternal virtue.
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-4">
+                    <button className="bg-gradient-to-r from-[#D4AF37] to-[#C2B280] hover:from-[#D4AF37]/90 hover:to-[#C2B280]/90 text-white px-8 py-3 rounded-xl font-bold transition-all hover:-translate-y-1">
+                      Join the Community
+                    </button>
+                    <button className="border-2 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 px-8 py-3 rounded-xl font-bold transition-all">
+                      Share the Story
+                    </button>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION 6: WISDOM */}
+        {/* SECTION 5: WISDOM */}
         <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
             <div className="min-h-full flex flex-col items-center justify-center max-w-5xl mx-auto">
@@ -426,8 +695,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SECTION 7: FAQ */}
-        <section className="min-w-full h-full snap-start pt-16">
+        {/* SECTION 6: FAQ */}
+        <section className="min-w-full h-full snap-start pt-16 bg-[#151515]">
           <div className="w-full h-full overflow-y-auto px-4 py-8 custom-scrollbar">
             <div className="min-h-full flex flex-col items-center justify-center max-w-3xl mx-auto">
               <h2 className="text-4xl font-bold text-[#F59E0B] mb-12">FAQ</h2>

@@ -269,10 +269,10 @@ Contributions welcome! Please:
 - [x] Multi-provider Redis support
 - [x] Self-hosting documentation
 - [x] Custom domain setup
-- [ ] Supabase Realtime (WebSocket) chat
-- [ ] File upload support
-- [ ] Todo CRUD API
-- [ ] Admin dashboard
+- [x] Supabase Realtime (WebSocket) chat
+- [x] File upload support
+- [x] Todo CRUD API
+- [x] Admin dashboard
 - [ ] Mobile app (React Native)
 
 ---

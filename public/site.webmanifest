@@ -1,0 +1,16 @@
+{
+  "name": "Hachiko Token",
+  "short_name": "Hachiko",
+  "description": "Japan's Most Loyal Dog on Solana",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#D4AF37",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

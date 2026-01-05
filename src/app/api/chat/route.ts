@@ -5,8 +5,7 @@ import {
   getRecentMessages,
   getOrCreateUser,
   isValidUsername,
-  moderateMessage,
-  ChatMessage
+  moderateMessage
 } from '@/lib/chat-service';
 
 export async function POST(request: NextRequest) {

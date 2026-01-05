@@ -1,0 +1,37 @@
+{
+    "prisma.pinToPrisma6": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/node_modules": true,
+        "**/.next": true,
+        "**/.netlify": true,
+        "**/build": true,
+        "**/dist": true,
+        "**/coverage": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/.next": true,
+        "**/.netlify": true,
+        "**/build": true,
+        "**/dist": true,
+        "**/coverage": true,
+        "**/.git": true,
+        "**/pnpm-lock.yaml": true
+    },
+    "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/.next/**": true,
+        "**/.netlify/**": true,
+        "**/build/**": true,
+        "**/dist/**": true,
+        "**/coverage/**": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true
+    }
+}

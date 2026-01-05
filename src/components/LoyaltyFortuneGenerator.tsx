@@ -1,9 +1,45 @@
 "use client";
 
 import { useState } from "react";
-import { BookOpen, PawPrint, Sparkles, Copy, Check, RefreshCw } from "lucide-react";
+import { BookOpen, Sparkles, Copy, Check, RefreshCw } from "lucide-react";
 
-const fortunes = [
+const wisdoms = [
+  "In Japanese culture, loyalty is an everyday practice, not a grand gesture.",
+  "Hachiko's story reminds us that devotion can be a form of quiet strength.",
+  "Honor (giri) is carried through actions, not announcements.",
+  "To keep a promise is to keep a part of yourself alive.",
+  "Waiting is not weakness when it is love with direction.",
+  "The spirit of omotenashi begins with showing up, again and again.",
+  "A bond is strongest when tested by time, not comfort.",
+  "The most powerful tribute is to live with the same steadfastness.",
+  "Patience is a kind of respect for what matters most.",
+  "Legacy grows when loyalty becomes habit.",
+  "True loyalty speaks louder than any promise made.",
+  "The heart that remains faithful becomes a beacon of hope.",
+  "In the silence of waiting, loyalty finds its true voice.",
+  "Devotion measured in years outweighs words spoken in moments.",
+  "A loyal soul creates ripples of trust that span generations.",
+  "The greatest love stories are written in patience, not passion.",
+  "Hachiko taught the world that waiting can be an act of worship.",
+  "Loyalty is the bridge between hearts that time cannot break.",
+  "In a world of change, faithfulness is the anchor of the soul.",
+  "The most profound connections are those that weather every storm.",
+  "True devotion needs no audience, only a faithful heart.",
+  "Hachiko's vigil became Japan's most beautiful poem.",
+  "Loyalty is the language that hearts understand best.",
+  "In waiting, Hachiko found his purpose and his peace.",
+  "The strongest bonds are forged in the fires of time and faithfulness.",
+  "A loyal companion transforms ordinary moments into sacred memories.",
+  "Patience is love's way of saying 'I'm not going anywhere.'",
+  "The legacy of loyalty is written in the heart, not on stone.",
+  "Hachiko's story became Japan's most beautiful love letter.",
+  "In the rhythm of daily return, loyalty finds its true expression.",
+  "The greatest loyalty is the one that asks for nothing in return.",
+  "A faithful heart becomes a lighthouse for lost souls seeking direction.",
+  "Hachiko proved that love is measured in presence, not distance.",
+  "In Japanese tradition, loyalty is the highest form of respect.",
+  "The spirit of Hachiko lives in every heart that chooses to wait.",
+  "True devotion is a promise kept even when the world has forgotten.",
   "Loyalty is the quiet power that outlasts every storm.",
   "The heart that waits with love becomes immortal.",
   "True devotion turns ordinary days into legend.",
@@ -16,59 +52,20 @@ const fortunes = [
   "Love is proven in the long wait, not the loud shout."
 ];
 
-const wisdoms = [
-  "In Japanese culture, loyalty is an everyday practice, not a grand gesture.",
-  "Hachiko's story reminds us that devotion can be a form of quiet strength.",
-  "Honor (giri) is carried through actions, not announcements.",
-  "To keep a promise is to keep a part of yourself alive.",
-  "Waiting is not weakness when it is love with direction.",
-  "The spirit of omotenashi begins with showing up, again and again.",
-  "A bond is strongest when tested by time, not comfort.",
-  "The most powerful tribute is to live with the same steadfastness.",
-  "Patience is a kind of respect for what matters most.",
-  "Legacy grows when loyalty becomes habit."
-];
-
-const facts = [
-  "Hachiko was an Akita dog born in 1923 in Odate, Japan.",
-  "He met his owner, Professor Hidesaburo Ueno, in 1924.",
-  "Hachiko waited at Shibuya Station daily after Ueno passed in 1925.",
-  "He kept his vigil for nearly 10 years until his death in 1935.",
-  "A bronze statue of Hachiko was unveiled at Shibuya Station in 1934.",
-  "Hachiko became a national symbol of loyalty in Japan.",
-  "His remains are preserved at the National Museum of Nature and Science in Tokyo.",
-  "Shibuya Station's Hachiko Exit is named in his honor.",
-  "His story inspired books, films, and commemorations worldwide.",
-  "Hachiko's legacy is celebrated every year in Shibuya."
-];
-
 const pickRandom = (items: string[]) => items[Math.floor(Math.random() * items.length)];
 
 export default function LoyaltyFortuneGenerator() {
-  const [current, setCurrent] = useState<{
-    fortune: string;
-    wisdom: string;
-    fact: string;
-  } | null>(null);
+  const [current, setCurrent] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const generate = () => {
-    setCurrent({
-      fortune: pickRandom(fortunes),
-      wisdom: pickRandom(wisdoms),
-      fact: pickRandom(facts)
-    });
+    setCurrent(pickRandom(wisdoms));
   };
 
   const copyToClipboard = async () => {
     if (!current) return;
     try {
-      const text = [
-        `Fortune: ${current.fortune}`,
-        `Wisdom: ${current.wisdom}`,
-        `Hachiko Fact: ${current.fact}`
-      ].join("\n");
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(current);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
@@ -102,32 +99,14 @@ export default function LoyaltyFortuneGenerator() {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-          <div className="flex items-center gap-2 text-[#F59E0B] font-semibold">
-            <Sparkles className="w-4 h-4" />
-            Fortune
+      <div className="mt-8">
+        <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#C2B280]/10 rounded-2xl p-8 border border-[rgba(245,158,11,0.3)]">
+          <div className="flex items-center gap-3 text-[#D4AF37] font-semibold mb-4">
+            <BookOpen className="w-5 h-5" />
+            <h3 className="text-xl font-bold">Wisdom of Hachiko</h3>
           </div>
-          <p className="mt-3 text-[#DBEAFE] italic">
-            {current?.fortune || "Generate a fortune inspired by Hachiko's loyalty."}
-          </p>
-        </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-          <div className="flex items-center gap-2 text-[#F59E0B] font-semibold">
-            <BookOpen className="w-4 h-4" />
-            Wisdom
-          </div>
-          <p className="mt-3 text-[#DBEAFE] italic">
-            {current?.wisdom || "A cultural note that ties patience to honor."}
-          </p>
-        </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-          <div className="flex items-center gap-2 text-[#F59E0B] font-semibold">
-            <PawPrint className="w-4 h-4" />
-            Dog Fact
-          </div>
-          <p className="mt-3 text-[#DBEAFE] italic">
-            {current?.fact || "A historical fact from Hachiko's life."}
+          <p className="text-white text-lg leading-relaxed italic">
+            {current || "Generate wisdom inspired by Hachiko's extraordinary loyalty and devotion."}
           </p>
         </div>
       </div>

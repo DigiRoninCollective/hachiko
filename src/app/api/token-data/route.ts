@@ -3,7 +3,7 @@ import { searchByToken } from '@/lib/dexscreener';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const address = searchParams.get('address') || 'HACH1Ko11111111111111111111111111111111';
+  const address = searchParams.get('address') || 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
   try {
     // For now, defaulting to Solana as per the branding
