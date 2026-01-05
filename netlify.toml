@@ -1,9 +1,9 @@
 [build]
-  command = "pnpm build"
+  command = "npm run build"
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"
   NPM_FLAGS = "--legacy-peer-deps"
 
 # Next.js specific settings
@@ -11,6 +11,11 @@
   package = "@netlify/plugin-nextjs"
 
 # Redirects for Next.js routing
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
