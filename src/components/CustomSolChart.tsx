@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 interface PriceData {
@@ -24,9 +24,9 @@ export default function SolUsdcChart() {
     }, 30000);
     
     return () => clearInterval(interval);
-  }, [timeframe]);
+  }, [timeframe, fetchSolUsdcData]);
 
-  const fetchSolUsdcData = async () => {
+  const fetchSolUsdcData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -52,9 +52,9 @@ export default function SolUsdcChart() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [generateHistoricalData, generateMockData]);
 
-  const generateHistoricalData = (basePrice: number) => {
+  const generateHistoricalData = useCallback((basePrice: number) => {
     const data: PriceData[] = [];
     const now = Date.now();
     let points = 24; // 24 hours for 1D
@@ -75,25 +75,14 @@ export default function SolUsdcChart() {
     }
     
     setPriceData(data);
-  };
+  }, [timeframe]);
 
-  const generateMockData = () => {
+  const generateMockData = useCallback(() => {
     const mockPrice = 234.56;
     setCurrentPrice(mockPrice.toFixed(2));
     setPriceChange('2.34');
     generateHistoricalData(mockPrice);
-  };
-
-  const formatTime = (timestamp: number) => {
-    const date = new Date(timestamp);
-    if (timeframe === '1D') {
-      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    } else if (timeframe === '1W') {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    } else {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-  };
+  }, [generateHistoricalData]);
 
   const isPositive = parseFloat(priceChange) >= 0;
 
